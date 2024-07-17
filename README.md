@@ -14,12 +14,12 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2023-1-MeasureSoftGram-Service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fga-eps-mds_2023-1-MeasureSoftGram-Service)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2023-1-MeasureSoftGram-Service&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=fga-eps-mds_2023-1-MeasureSoftGram-Service)
 
-
 ## O que é
 
 The MeasureSoftGram-Service is responsible for containing and manipulating MeasureSoftGram data: metrics, configuration goals, analyzes performed, etc. It uses the MVC layer pattern for building and organizing the service.
 
 ## How to use Service
+
 -[How to use](https://fga-eps-mds.github.io/2021-2-MeasureSoftGram-Doc/docs/artifact/how_to_use)
 
 ## How to run Service
@@ -30,8 +30,8 @@ Make the container with :
 docker-compose up
 ```
 
-
 ## Endpoints
+
 ```
 ## Lista todas as métricas suportadas pelo MeasureSoftGram
 - GET: https://measuresoftgram-service.herokuapp.com/api/v1/supported-metrics/
@@ -56,20 +56,17 @@ docker-compose up
 ```
 
 ## Acessa o painel administrativo do MeasureSoftGram
+
 - GET: https://measuresoftgram-service.herokuapp.com/admin/
 - Converse com os membros da equipe para socilitar uma credencial de acesso
 
-```
-
-
 ## How to run tests
-Install this dependencies
 
+Install this dependencies
 
 ```
 pip install -r requirements.txt
 ```
-
 
 We are using tox for the tests, so it is good to install the tox:
 
@@ -80,15 +77,17 @@ pip install tox
 Then you can run the tests using
 
 ```
- tox
+tox
 ```
 
 if you want to especify the file use:
+
 ```
- tox <PACKAGE OR FILE>
+tox <PACKAGE OR FILE>
 ```
 
 If it does not work, you can try to run before:
+
 ```
 pip install pytest-mock
 ```
@@ -96,12 +95,14 @@ pip install pytest-mock
 ## Another informations
 
 Our services are available on [Docker Hub](https://hub.docker.com/):
+
 - [Core](https://hub.docker.com/r/measuresoftgram/core)
 - [Service](https://hub.docker.com/r/measuresoftgram/service)
 
 ### Wiki
 
 For more informations, you can see our wiki:
+
 - [Wiki](https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/).
 
 ## Contribute
