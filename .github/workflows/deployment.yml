@@ -1,12 +1,12 @@
 name: Deploy Service
 
 on:
-    push:
-        branches:
-            - develop
+  push:
+    branches: [ develop ]
 
 jobs:
-  deploy:
+  Deploy:
+    name: Deploy to EC2
     runs-on: ubuntu-latest
     
     steps:
@@ -16,24 +16,24 @@ jobs:
             PRIVATE_KEY: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
             HOSTNAME: ${{secrets.EC2_HOST}}
             USER_NAME: ${{secrets.EC2_USER}}
-
+      
         run: |
-            echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-            ssh -o -tt StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
 
-            cd msg-service &&
+              cd msg-service &&
 
-            echo "Fetching changes from repository..." &&
+              echo "Fetching changes from repository..." &&
 
-            sudo git pull &&
+              sudo git pull &&
 
-            echo "Building images..." &&
+              echo "Building images..." &&
 
-            sudo docker-compose build &&
+              sudo docker-compose build &&
 
-            echo "Running docker-compose up..." &&
+              echo "Running docker-compose up..." &&
 
-            sudo docker-compose up -d &&
+              sudo docker-compose up -d &&
 
-            echo "Deployment complete."       
-          '
+              echo "Deployment complete."
+              '
