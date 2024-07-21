@@ -23,6 +23,7 @@ services:
     command: [ "./start_service.sh" ]
     ports:
       - "8080:80" # Main port
+      - "80:80" # Main port
       - "8181:8181" # Debug port
     volumes:
       - ./src:/src
