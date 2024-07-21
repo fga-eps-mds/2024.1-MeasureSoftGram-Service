@@ -11,30 +11,29 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2 
-      - name: checkout code
+      - name: Deploy to EC2
         env:
             PRIVATE_KEY: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
             HOSTNAME: ${{secrets.EC2_HOST}}
             USER_NAME: ${{secrets.EC2_USER}}
 
-    - name: Deploy to EC2
-      run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o -tt StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+        run: |
+            echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+            ssh -o -tt StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
 
-          cd msg-service &&
+            cd msg-service &&
 
-          echo "Fetching changes from repository..." &&
+            echo "Fetching changes from repository..." &&
 
-          sudo git pull &&
+            sudo git pull &&
 
-          echo "Building images..." &&
+            echo "Building images..." &&
 
-          sudo docker-compose build &&
+            sudo docker-compose build &&
 
-          echo "Running docker-compose up..." &&
+            echo "Running docker-compose up..." &&
 
-          sudo docker-compose up -d &&
+            sudo docker-compose up -d &&
 
-          echo "Deployment complete."       
-        '
+            echo "Deployment complete."       
+          '
