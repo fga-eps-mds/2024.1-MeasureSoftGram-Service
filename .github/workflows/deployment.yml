@@ -12,15 +12,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
+            HOSTNAME: ${{secrets.EC2_HOST}}
+            USER_NAME: ${{secrets.EC2_USER}}
 
     - name: Deploy to EC2
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o -tt StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
           cd msg-service &&
 
           echo "Fetching changes from repository..." &&
