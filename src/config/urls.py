@@ -60,7 +60,6 @@ urlpatterns = [
     path('api/v1/', include(org_router.nested_router.urls)),
     path('api/v1/', include(prod_router.nested_router.urls)),
     path('api/v1/', include(repo_router.nested_router.urls)),
-    path('api/testecd/', include(repo_router.nested_router.urls)),
     path('api/v1/', include(accounts_urls.urlpatterns)),
 ]
 
