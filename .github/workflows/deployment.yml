@@ -20,26 +20,20 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd msg-service
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          cd msg-service &&
 
-          echo "Fetching changes from repository..."
+          echo "Fetching changes from repository..." &&
 
-          git pull origin main
+          git pull origin main &&
 
-          echo "Building images..."
+          echo "Building images..." &&
 
-          sudo docker-compose build
+          sudo docker-compose build &&
 
-          echo "Running docker-compose up..."
+          echo "Running docker-compose up..." &&
 
-          sudo docker-compose up -d
+          sudo docker-compose up -d &&
 
-          echo "Waiting for containers to be healthy..."
-
-          while [ "$(sudo docker inspect -f '{{.State.Health.Status}}' $(sudo docker-compose ps -q))" != "healthy" ]; do
-            sleep 10
-          done
-
-          echo "Deployment complete."
-        EOF
+          echo "Deployment complete."       
+        '
