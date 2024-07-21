@@ -20,14 +20,14 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        ssh -t -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd msg-service
           git pull origin main
           sudo docker-compose build
           sudo docker-compose up -d
 
           echo "Waiting for containers to be healthy..."
-          
+
           while [ "$(sudo docker inspect -f '{{.State.Health.Status}}' $(sudo docker-compose ps -q))" != "healthy" ]; do
             sleep 10
           done
