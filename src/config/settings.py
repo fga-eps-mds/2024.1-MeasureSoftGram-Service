@@ -33,13 +33,14 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', 't', '1')
 # Allowed origins on CORS
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://127.0.0.1:3000',
     os.getenv(
         'FRONTEND_DEV_URL',
-        'https://2023-2-measure-soft-gram-front-bocp.vercel.app',
+        'https://2024-1-measure-soft-gram.vercel.app',
     ),
     os.getenv(
         'FRONTEND_PROD_URL',
-        'https://2023-2-measure-soft-gram-front-bocp.vercel.app',
+        'https://2024-1-measure-soft-gram.vercel.app',
     ),
 ]
 CORS_ALLOW_CREDENTIALS = True
