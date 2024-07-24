@@ -59,17 +59,12 @@ docker-compose up
 - GET: https://measuresoftgram-service.herokuapp.com/admin/
 - Converse com os membros da equipe para socilitar uma credencial de acesso
 
-```
-
-
 ## How to run tests
 Install this dependencies
-
 
 ```
 pip install -r requirements.txt
 ```
-
 
 We are using tox for the tests, so it is good to install the tox:
 
