@@ -8,6 +8,8 @@ from goals.models import Goal
 from organizations.models import Repository
 from characteristics.models import CalculatedCharacteristic
 from releases.service import (
+    get_accomplished_values,
+    get_planned_values,
     get_process_calculated_characteristics,
     get_calculated_characteristic_by_ids_repositories,
     get_arrays_diff,
@@ -21,6 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.transformations import diff, norm_diff
 
+import numpy as np
 
 class CreateReleaseModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -145,3 +148,34 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
             )
         else:
             return Response({'detail': 'Release não encontrada'}, status=404)
+
+    @action(
+        detail=True,
+        methods=['get']
+    )
+    def analysis_data(self, request, pk=None, *args, **kwargs):
+        release_id = pk
+        product_pk = self.kwargs['product_pk']
+
+        release = Release.objects.filter(id=release_id).first()
+
+        if release == None:
+            return Response({'detail': 'Release não encontrada'}, status=404)
+
+        repositories_ids = list(
+                Repository.objects.filter(product_id=product_pk)
+                .values_list('id', flat=True)
+                .all()
+            )
+
+        serialized_release = ReleaseAllSerializer(release).data
+        planned_values = get_planned_values(release)
+        accomplished_values = get_accomplished_values(release, repositories_ids)
+
+        return Response(
+            {
+                'release': serialized_release,
+                'planned': planned_values,
+                'accomplished': accomplished_values,
+            }
+        )
