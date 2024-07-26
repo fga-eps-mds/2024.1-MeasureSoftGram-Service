@@ -29,8 +29,7 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             product=self.product,
             data={
                 'reliability': 53,
-                'maintainability': 53,
-                'functional_suitability': 53,
+                'maintainability': 53
             },
         )
         self.url_default = f'/api/v1/organizations/{self.org.id}/products/{self.product.id}/create/release/'
@@ -442,9 +441,13 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             path=f'{self.url_default}999/analysis_data/'
         )
 
-        self.assertEqual(response.status_code, 200)
-        assert 'reliability' in response.json()['planned'].keys()
-        assert 'maintainability' in response.json()['planned'].keys()
+        planned = [
+            {'name': 'reliability', 'value': 0.53},
+            {'name': 'maintainability', 'value': 0.53},
+        ]
+
+        assert response.status_code == 200
+        assert response.json()['planned'] == planned
 
     def test_get_analysis_data_release_finished(self):
         Release.objects.create(
@@ -491,5 +494,23 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             path=f'{self.url_default}999/analysis_data/'
         )
 
+        accomplished = [
+            {
+                'repository_name': 'Repository_name',
+                'characteristics': [
+                    {'name': 'maintainability', 'value': 1.0},
+                    {'name': 'reliability', 'value': 1.0},
+                ]
+            }
+        ]
+
         assert response.status_code == 200
-        assert response.json()['accomplished'] == {'Repository_name': {'maintainability': 1.0, 'reliability': 1.0}}
+        assert response.json()['accomplished'] == accomplished
+
+    def test_get_analysis_data_release_not_found(self):
+        response = self.client.get(
+            path=f'{self.url_default}999/analysis_data/'
+        )
+
+        assert response.status_code == 404
+        assert response.json()['detail'] == 'Release não encontrada'
