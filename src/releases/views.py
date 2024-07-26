@@ -23,7 +23,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.transformations import diff, norm_diff
 
-import numpy as np
 
 class CreateReleaseModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -159,14 +158,14 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
 
         release = Release.objects.filter(id=release_id).first()
 
-        if release == None:
+        if release is None:
             return Response({'detail': 'Release não encontrada'}, status=404)
 
         repositories_ids = list(
-                Repository.objects.filter(product_id=product_pk)
-                .values_list('id', flat=True)
-                .all()
-            )
+            Repository.objects.filter(product_id=product_pk)
+            .values_list('id', flat=True)
+            .all()
+        )
 
         serialized_release = ReleaseAllSerializer(release).data
         planned_values = get_planned_values(release)

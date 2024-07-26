@@ -1,6 +1,7 @@
 from characteristics.models import CalculatedCharacteristic
 from releases.models import Release
 
+
 def get_planned_values(release: Release):
     planned_values = {}
 
@@ -8,6 +9,7 @@ def get_planned_values(release: Release):
         planned_values[characteristic] = value / 100
 
     return planned_values
+
 
 def get_accomplished_values(release: Release, repositories_ids: list[int]):
     result_calculated = CalculatedCharacteristic.objects.filter(release=release).all()
