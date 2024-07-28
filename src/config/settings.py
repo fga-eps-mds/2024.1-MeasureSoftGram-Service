@@ -287,13 +287,13 @@ GITHUB_METRICS = [
         "metric_type": "INT",
     }, 
     {
-        "key": "total_resolved_issues", 
-        "name": "Total closed issues in release period", 
+        "key": "total_resolved_issues",
+        "name": "Total closed issues in release period",
         "metric_type": "INT",
     }, 
     {
         "key": "total_issues",
-        "name": "Total issues in release period", 
+        "name": "Total issues in release period",
         "metric_type": "INT",
     }
     # {
