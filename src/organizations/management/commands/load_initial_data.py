@@ -102,7 +102,7 @@ class Command(BaseCommand):
 
     def create_supported_metrics(self):
         self.create_sonarqube_supported_metrics()
-        # self.create_github_supported_metrics()
+        self.create_github_supported_metrics()
 
     def create_sonarqube_supported_metrics(self):
         sonar_endpoint = 'https://sonarcloud.io/api/metrics/search'
