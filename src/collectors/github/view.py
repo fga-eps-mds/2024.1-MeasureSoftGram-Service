@@ -11,7 +11,6 @@ from rest_framework.response import Response
 
 from collectors.github import utils
 from collectors.github.serializers import GithubCollectorParamsSerializer
-from metrics.models import SupportedMetric
 from metrics.serializers import LatestCollectedMetricSerializer
 from organizations.models import Repository
 from metrics.models import CollectedMetric, SupportedMetric
