@@ -179,6 +179,7 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
             }
         )
 
+
 class ReleaseListAllModelViewSet(viewsets.ModelViewSet):
     queryset = Release.objects.all()
 
