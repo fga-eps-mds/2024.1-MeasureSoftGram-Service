@@ -285,6 +285,16 @@ GITHUB_METRICS = [
         "key": "ci_feedback_time",
         "name": "Time spent in seconds on the release build worflow",
         "metric_type": "INT",
+    },
+    {
+        "key": "total_resolved_issues",
+        "name": "Numero total de issues fechadas no periodo de release",
+        "metric_type": "INT",
+    },
+    {
+        "key": "total_issues",
+        "name": "Numero total de issues no período da release",
+        "metric_type": "INT",
     }
     # {
     #     'key': 'number_of_resolved_issues_in_the_last_x_days',

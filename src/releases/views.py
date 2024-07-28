@@ -181,6 +181,7 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
 
 
 class ReleaseListAllModelViewSet(viewsets.ModelViewSet):
+    serializer_class = ReleaseAllSerializer
     queryset = Release.objects.all()
 
     def get_releases(self, product):
