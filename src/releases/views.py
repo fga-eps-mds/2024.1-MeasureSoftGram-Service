@@ -178,3 +178,9 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
                 'accomplished': accomplished_values,
             }
         )
+
+class ReleaseListAllModelViewSet(viewsets.ModelViewSet):
+    queryset = Release.objects.all()
+
+    def get_releases(self, product):
+        return Release.objects.filter(product=product)
