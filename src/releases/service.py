@@ -64,11 +64,13 @@ def get_process_calculated_characteristics_to_list(
 
     return accomplished
 
+
 def get_norm_diff(planned_values, accomplished_values):
     for repository in accomplished_values:
         repository['norm_diff'] = calculate_norm_diff(planned_values, repository['characteristics'])
 
     return accomplished_values
+
 
 def calculate_norm_diff(planned_values, accomplished_characteristics):
     if len(planned_values) != len(accomplished_characteristics):
@@ -94,11 +96,9 @@ def calculate_norm_diff(planned_values, accomplished_characteristics):
                       + 'was not found in the accomplished characteristics.')
                 return None
 
-
             rd.append(accomplished_value)
 
         return norm_diff(np.array(rp), np.array(rd))
-
 
 
 def get_process_calculated_characteristics(

@@ -500,7 +500,8 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
                 'characteristics': [
                     {'name': 'maintainability', 'value': 1.0},
                     {'name': 'reliability', 'value': 1.0},
-                ]
+                ],
+                'norm_diff': 0.8867924528301886
             }
         ]
 
