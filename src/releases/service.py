@@ -1,4 +1,66 @@
 from characteristics.models import CalculatedCharacteristic
+from releases.models import Release
+
+
+def get_planned_values(release: Release):
+    planned_values = []
+
+    for characteristic_name, characteristic_value in release.goal.data.items():
+        characteristic = {
+            'name': characteristic_name,
+            'value': characteristic_value / 100,
+        }
+
+        planned_values.append(characteristic)
+
+    return planned_values
+
+
+def get_accomplished_values(release: Release, repositories_ids: list[int]):
+    result_calculated = CalculatedCharacteristic.objects.filter(release=release).all().order_by('-created_at')[:2]
+
+    if len(result_calculated) == 0:
+        result_calculated = (
+            get_calculated_characteristic_by_ids_repositories(
+                repositories_ids
+            )
+        )
+
+    return get_process_calculated_characteristics_to_list(list(result_calculated))
+
+
+def get_process_calculated_characteristics_to_list(
+    result_calculated: list[CalculatedCharacteristic],
+):
+    accomplished = []
+
+    for calculated_characteristic in result_calculated:
+
+        repository_name = calculated_characteristic.repository.name
+        characteristic_name = calculated_characteristic.characteristic.key
+        characteristic_value = calculated_characteristic.value
+
+        characteristic = {
+            'name': characteristic_name,
+            'value': characteristic_value,
+        }
+
+        isRepositoryInserted = False
+
+        for repository in accomplished:
+            if repository['repository_name'] == repository_name:
+                isRepositoryInserted = True
+                if all(characteristic['name'] != characteristic_name
+                       for characteristic in repository['characteristics']):
+                    repository['characteristics'].append(characteristic)
+
+        if not isRepositoryInserted:
+            accomplished.append({
+                'repository_name': repository_name,
+                'characteristics': [characteristic]
+            })
+
+    return accomplished
 
 
 def get_process_calculated_characteristics(

@@ -29,8 +29,7 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             product=self.product,
             data={
                 'reliability': 53,
-                'maintainability': 53,
-                'functional_suitability': 53,
+                'maintainability': 53
             },
         )
         self.url_default = f'/api/v1/organizations/{self.org.id}/products/{self.product.id}/create/release/'
@@ -425,3 +424,93 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
 
         assert response.status_code == 200
         assert response.json()['accomplished'] == {'Msg': [0, 0]}
+
+    def test_get_analysis_data_no_release_finished(self):
+        Release.objects.create(
+            id=999,
+            created_at=date.today(),
+            start_at=date.today(),
+            end_at=date.today() + timedelta(days=2),
+            release_name='Release 999',
+            created_by=self.user,
+            product=self.product,
+            goal=self.goal,
+        )
+
+        response = self.client.get(
+            path=f'{self.url_default}999/analysis_data/'
+        )
+
+        planned = [
+            {'name': 'reliability', 'value': 0.53},
+            {'name': 'maintainability', 'value': 0.53},
+        ]
+
+        assert response.status_code == 200
+        assert response.json()['planned'] == planned
+
+    def test_get_analysis_data_release_finished(self):
+        Release.objects.create(
+            id=999,
+            created_at=date.today(),
+            start_at=date.today(),
+            end_at=date.today() + timedelta(days=2),
+            release_name='Release 999',
+            created_by=self.user,
+            product=self.product,
+            goal=self.goal,
+        )
+
+        repository = Repository.objects.create(
+            id=1,
+            name='Repository_name',
+            key='2023-2-Msg',
+            product=self.product,
+        )
+
+        reliability = SupportedCharacteristic.objects.filter(
+            key='reliability'
+        ).first()
+
+        maintainability = SupportedCharacteristic.objects.filter(
+            key='maintainability'
+        ).first()
+
+        CalculatedCharacteristic.objects.create(
+            release_id=999,
+            characteristic=reliability,
+            repository=repository,
+            value=1,
+        )
+
+        CalculatedCharacteristic.objects.create(
+            release_id=999,
+            characteristic=maintainability,
+            repository=repository,
+            value=1,
+        )
+
+        response = self.client.get(
+            path=f'{self.url_default}999/analysis_data/'
+        )
+
+        accomplished = [
+            {
+                'repository_name': 'Repository_name',
+                'characteristics': [
+                    {'name': 'maintainability', 'value': 1.0},
+                    {'name': 'reliability', 'value': 1.0},
+                ]
+            }
+        ]
+
+        assert response.status_code == 200
+        assert response.json()['accomplished'] == accomplished
+
+    def test_get_analysis_data_release_not_found(self):
+        response = self.client.get(
+            path=f'{self.url_default}999/analysis_data/'
+        )
+
+        assert response.status_code == 404
+        assert response.json()['detail'] == 'Release não encontrada'
