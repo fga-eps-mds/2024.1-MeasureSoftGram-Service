@@ -1,7 +1,33 @@
 from characteristics.models import CalculatedCharacteristic
 from releases.models import Release
-from core.transformations import norm_diff
+from core.transformations import norm_diff, diff
 import numpy as np
+
+
+def calculate_diff(planned, accomplished):
+    diffs = {}
+    planned_values = {item['name']: item['value'] for item in planned}
+
+    for repo in accomplished:
+        rp = []
+        rd = []
+        repo_name = repo['repository_name']
+
+        for characteristic in repo['characteristics']:
+            name = characteristic['name']
+            value = characteristic['value']
+            rd.append(value)
+
+            if name in planned_values:
+                rp.append(planned_values[name])
+
+        diff_array = diff(rp, rd)
+        diffs[repo_name] = diff_array
+
+        for characteristic, i in zip(repo['characteristics'], range(len(repo['characteristics']))):
+            characteristic['diff'] = diffs[repo_name][i]
+
+    return accomplished
 
 
 def get_planned_values(release: Release):
@@ -35,7 +61,6 @@ def get_process_calculated_characteristics_to_list(
     result_calculated: list[CalculatedCharacteristic],
 ):
     accomplished = []
-
     for calculated_characteristic in result_calculated:
 
         repository_name = calculated_characteristic.repository.name
