@@ -96,6 +96,10 @@ def calculate_norm_diff(planned_values, accomplished_characteristics):
                       + 'was not found in the accomplished characteristics.')
                 return None
 
+            if accomplished_value < 0 or accomplished_value > 1:
+                print('Accomplished characteristic value should be between 0 and 1.')
+                return None
+
             rd.append(accomplished_value)
 
         return norm_diff(np.array(rp), np.array(rd))
