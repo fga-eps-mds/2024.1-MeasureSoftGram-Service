@@ -461,13 +461,6 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             goal=self.goal,
         )
 
-        repository = Repository.objects.create(
-            id=1,
-            name='Repository_name',
-            key='2023-2-Msg',
-            product=self.product,
-        )
-
         reliability = SupportedCharacteristic.objects.filter(
             key='reliability'
         ).first()
@@ -476,18 +469,46 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             key='maintainability'
         ).first()
 
+        repository1 = Repository.objects.create(
+            id=1,
+            name='Repository_name',
+            key='2023-2-Msg',
+            product=self.product,
+        )
+
         CalculatedCharacteristic.objects.create(
             release_id=999,
             characteristic=reliability,
-            repository=repository,
+            repository=repository1,
             value=1,
         )
 
         CalculatedCharacteristic.objects.create(
             release_id=999,
             characteristic=maintainability,
-            repository=repository,
+            repository=repository1,
             value=1,
+        )
+
+        repository2 = Repository.objects.create(
+            id=2,
+            name='Repository_name 2',
+            key='2023-2-Msg-2',
+            product=self.product,
+        )
+
+        CalculatedCharacteristic.objects.create(
+            release_id=999,
+            characteristic=reliability,
+            repository=repository2,
+            value=1,
+        )
+
+        CalculatedCharacteristic.objects.create(
+            release_id=999,
+            characteristic=maintainability,
+            repository=repository2,
+            value=1.1,
         )
 
         response = self.client.get(
@@ -500,7 +521,16 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
                 'characteristics': [
                     {'name': 'maintainability', 'value': 1.0},
                     {'name': 'reliability', 'value': 1.0},
-                ]
+                ],
+                'norm_diff': 0.8867924528301886
+            },
+            {
+                'repository_name': 'Repository_name 2',
+                'characteristics': [
+                    {'name': 'maintainability', 'value': 1.1},
+                    {'name': 'reliability', 'value': 1.0},
+                ],
+                'norm_diff': None
             }
         ]
 
