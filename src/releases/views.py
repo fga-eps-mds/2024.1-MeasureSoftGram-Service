@@ -13,6 +13,7 @@ from releases.service import (
     get_process_calculated_characteristics,
     get_calculated_characteristic_by_ids_repositories,
     get_arrays_diff,
+    calculate_diff
 )
 
 from rest_framework import viewsets
@@ -170,11 +171,12 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
         serialized_release = ReleaseAllSerializer(release).data
         planned_values = get_planned_values(release)
         accomplished_values = get_accomplished_values(release, repositories_ids)
+        accomplished_values_with_diff = calculate_diff(planned_values, accomplished_values)
 
         return Response(
             {
                 'release': serialized_release,
                 'planned': planned_values,
-                'accomplished': accomplished_values,
+                'accomplished': accomplished_values_with_diff,
             }
         )
