@@ -3,6 +3,7 @@ from releases.models import Release
 from core.transformations import norm_diff, diff
 import numpy as np
 
+
 def calculate_diff(planned, accomplished):
     diffs = {}
     planned_values = {item['name']: item['value'] for item in planned}
@@ -20,13 +21,14 @@ def calculate_diff(planned, accomplished):
             if name in planned_values:
                 rp.append(planned_values[name])
 
-        diff_array = diff(rp,rd)
+        diff_array = diff(rp, rd)
         diffs[repo_name] = diff_array
 
         for characteristic, i in zip(repo['characteristics'], range(len(repo['characteristics']))):
             characteristic['diff'] = diffs[repo_name][i]
 
     return accomplished
+
 
 def get_planned_values(release: Release):
     planned_values = []
