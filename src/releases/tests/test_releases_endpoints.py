@@ -498,8 +498,8 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             {
                 'repository_name': 'Repository_name',
                 'characteristics': [
-                    {'name': 'maintainability', 'value': 1.0},
-                    {'name': 'reliability', 'value': 1.0},
+                    {'name': 'maintainability', 'value': 1.0, 'diff': 0},
+                    {'name': 'reliability', 'value': 1.0, 'diff': 0},
                 ]
             }
         ]
