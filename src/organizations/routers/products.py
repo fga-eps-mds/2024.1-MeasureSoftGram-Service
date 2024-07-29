@@ -15,7 +15,7 @@ from pre_configs.views import (
     CreatePreConfigModelViewSet,
     CurrentPreConfigModelViewSet,
 )
-from releases.views import CreateReleaseModelViewSet
+from releases.views import CreateReleaseModelViewSet, ReleaseListAllModelViewSet
 
 
 class ProductRouter(Router):
@@ -72,6 +72,11 @@ class ProductRouter(Router):
                 'name': 'release',
                 'view': ReleaseListModelViewSet,
                 'basename': 'release-list',
+            },
+            {
+                'name': 'release/all',
+                'view': ReleaseListAllModelViewSet,
+                'basename': 'release-list-all',
             },
             {
                 'name': 'create/release',

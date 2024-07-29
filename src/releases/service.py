@@ -1,6 +1,7 @@
 from characteristics.models import CalculatedCharacteristic
 from releases.models import Release
-from core.transformations import diff
+from core.transformations import norm_diff, diff
+import numpy as np
 
 def calculate_diff(planned, accomplished):
     diffs = {}
@@ -87,7 +88,48 @@ def get_process_calculated_characteristics_to_list(
     return accomplished
 
 
+def get_norm_diff(planned_values, accomplished_values):
+    for repository in accomplished_values:
+        repository['norm_diff'] = calculate_norm_diff(planned_values, repository['characteristics'])
+
+    return accomplished_values
+
+
+def calculate_norm_diff(planned_values, accomplished_characteristics):
+    if len(planned_values) != len(accomplished_characteristics):
+        print('The number of planned and accomplished characteristics should be the same.')
+        return None
+
+    else:
+        rp = []
+        rd = []
+
+        for planned_characteristic in planned_values:
+            planned_characteristic_name = planned_characteristic['name']
+
+            rp.append(planned_characteristic['value'])
+            accomplished_value = None
+
+            for accomplished_characteristic in accomplished_characteristics:
+                if accomplished_characteristic['name'] == planned_characteristic_name:
+                    accomplished_value = accomplished_characteristic['value']
+
+            if accomplished_value is None:
+                print(f'Planned characteristic {planned_characteristic_name}'
+                      + 'was not found in the accomplished characteristics.')
+                return None
+
+            if accomplished_value < 0 or accomplished_value > 1:
+                print('Accomplished characteristic value should be between 0 and 1.')
+                return None
+
+            rd.append(accomplished_value)
+
+        return norm_diff(np.array(rp), np.array(rd))
+
+
 def get_process_calculated_characteristics(
+
     result_calculated: list[CalculatedCharacteristic],
 ):
     accomplished = {}
