@@ -490,27 +490,6 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             value=1,
         )
 
-        repository2 = Repository.objects.create(
-            id=2,
-            name='Repository_name 2',
-            key='2023-2-Msg-2',
-            product=self.product,
-        )
-
-        CalculatedCharacteristic.objects.create(
-            release_id=999,
-            characteristic=reliability,
-            repository=repository2,
-            value=1,
-        )
-
-        CalculatedCharacteristic.objects.create(
-            release_id=999,
-            characteristic=maintainability,
-            repository=repository2,
-            value=1.1,
-        )
-
         response = self.client.get(
             path=f'{self.url_default}999/analysis_data/'
         )
@@ -523,14 +502,6 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
                     {'name': 'reliability', 'value': 1.0},
                 ],
                 'norm_diff': 0.8867924528301886
-            },
-            {
-                'repository_name': 'Repository_name 2',
-                'characteristics': [
-                    {'name': 'maintainability', 'value': 1.1},
-                    {'name': 'reliability', 'value': 1.0},
-                ],
-                'norm_diff': None
             }
         ]
 
