@@ -9,10 +9,12 @@ from organizations.models import Repository
 from characteristics.models import CalculatedCharacteristic
 from releases.service import (
     get_accomplished_values,
+    get_norm_diff,
     get_planned_values,
     get_process_calculated_characteristics,
     get_calculated_characteristic_by_ids_repositories,
     get_arrays_diff,
+    calculate_diff
 )
 
 from rest_framework import viewsets
@@ -21,7 +23,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from core.transformations import diff, norm_diff
+from core.transformations import diff
 
 
 class CreateReleaseModelViewSet(viewsets.ModelViewSet):
@@ -170,12 +172,14 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
         serialized_release = ReleaseAllSerializer(release).data
         planned_values = get_planned_values(release)
         accomplished_values = get_accomplished_values(release, repositories_ids)
+        accomplished_with_norm_diff = get_norm_diff(planned_values, accomplished_values)
+        accomplished_values_with_diff_and_norm_diff = calculate_diff(planned_values, accomplished_with_norm_diff)
 
         return Response(
             {
                 'release': serialized_release,
                 'planned': planned_values,
-                'accomplished': accomplished_values,
+                'accomplished': accomplished_values_with_diff_and_norm_diff,
             }
         )
 
