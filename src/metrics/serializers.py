@@ -110,7 +110,7 @@ class CollectedMetricHistorySerializer(serializers.ModelSerializer):
                 qs = qs.filter(created_at__gte=start_date)
             if end_date:
                 qs = qs.filter(created_at__lte=end_date)
-            
+
             repository = self.context['view'].get_repository()
             qs = qs.filter(repository=repository)
             qs = qs.reverse()
