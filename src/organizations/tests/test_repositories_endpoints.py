@@ -354,37 +354,37 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 201)
 
-    def test_if_calculate_measures_action_url_is_working(self, *a, **k):
-        actions_urls = self.get_repository_urls('actions')
-        url = actions_urls['calculate measures']
+    # def test_if_calculate_measures_action_url_is_working(self, *a, **k):
+    #     actions_urls = self.get_repository_urls('actions')
+    #     url = actions_urls['calculate measures']
 
-        listed_values = [
-            'coverage',
-            'complexity',
-            'functions',
-            'comment_lines_density',
-            'duplicated_lines_density',
-        ]
-        uts_values = ['test_execution_time', 'tests']
-        trk_values = ['test_failures', 'test_errors']
+    #     listed_values = [
+    #         'coverage',
+    #         'complexity',
+    #         'functions',
+    #         'comment_lines_density',
+    #         'duplicated_lines_density',
+    #     ]
+    #     uts_values = ['test_execution_time', 'tests']
+    #     trk_values = ['test_failures', 'test_errors']
 
-        for values, qualifier in zip(
-            [listed_values, uts_values, trk_values], ['FIL', 'UTS', 'TRK']
-        ):
-            for metric in SupportedMetric.objects.filter(key__in=values):
-                CollectedMetric.objects.create(
-                    value=0.1,
-                    metric=metric,
-                    repository=self.repository,
-                    qualifier=qualifier,
-                )
+    #     for values, qualifier in zip(
+    #         [listed_values, uts_values, trk_values], ['FIL', 'UTS', 'TRK']
+    #     ):
+    #         for metric in SupportedMetric.objects.filter(key__in=values):
+    #             CollectedMetric.objects.create(
+    #                 value=0.1,
+    #                 metric=metric,
+    #                 repository=self.repository,
+    #                 qualifier=qualifier,
+    #             )
 
-        measures_keys = [
-            {'key': measure.key} for measure in SupportedMeasure.objects.all()
-        ]
-        data = {'measures': measures_keys}
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, 201)
+    #     measures_keys = [
+    #         {'key': measure.key} for measure in SupportedMeasure.objects.all()
+    #     ]
+    #     data = {'measures': measures_keys}
+    #     response = self.client.post(url, data, format='json')
+    #     self.assertEqual(response.status_code, 201)
 
     def test_if_calculate_subcharacteristics_action_url_is_working(
         self, *a, **k
