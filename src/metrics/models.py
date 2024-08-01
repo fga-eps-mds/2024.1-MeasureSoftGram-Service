@@ -71,7 +71,7 @@ class SupportedMetric(models.Model):
             return self.get_latest_metric_values(repository, qualifier='FIL')
         elif self.key in uts_values:
             return self.get_latest_metric_values(repository, qualifier='UTS')
-        elif self.key in github_values: 
+        elif self.key in github_values:
             latest_metric = self.collected_metrics.filter(
                 repository=repository,
                 qualifier='FIL',

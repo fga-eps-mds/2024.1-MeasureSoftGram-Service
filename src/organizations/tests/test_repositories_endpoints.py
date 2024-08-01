@@ -385,7 +385,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     repository=self.repository,
                     qualifier=qualifier,
                 )
-        
+
         listed_values = [
             'total_issues',
             'resolved_issues',
@@ -402,8 +402,6 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     repository=self.repository,
                     qualifier=qualifier,
                 )
-
-
         measures_keys = [
             {'key': measure.key} for measure in SupportedMeasure.objects.all()
         ]
@@ -566,7 +564,6 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     repository=self.repository,
                     qualifier=qualifier,
                 )
-
 
         data = {
             'measures': measures_keys,
