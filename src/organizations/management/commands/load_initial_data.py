@@ -332,6 +332,7 @@ class Command(BaseCommand):
                 'subcharacteristics': [
                     {'key': 'testing_status'},
                     {'key': 'reliability'},
+                    {'key': 'maturity'},
                 ],
             },
             {
