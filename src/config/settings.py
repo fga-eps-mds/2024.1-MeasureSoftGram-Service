@@ -283,8 +283,13 @@ if DEBUG:
 
 GITHUB_METRICS = [
     {
-        "key": "ci_feedback_time",
-        "name": "Time spent in seconds on the release build worflow",
+        "key": "sum_ci_feedback_times",
+        "name": "Sum of time spent in seconds on builds",
+        "metric_type": "INT",
+    },
+    {
+        "key": "total_builds",
+        "name": "Total build count",
         "metric_type": "INT",
     },
     {
@@ -303,6 +308,11 @@ GITHUB_SUPPORTED_MEASURES = [
     {
         'team_throughput': {
             'metrics': ['resolved_issues', 'total_issues']
+        }
+    },
+    {
+        'ci_feedback_time': {
+            'metrics': ['sum_ci_feedback_times', 'total_builds']
         }
     }
 ]

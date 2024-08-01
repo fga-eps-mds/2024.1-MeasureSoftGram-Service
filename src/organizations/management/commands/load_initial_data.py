@@ -293,6 +293,13 @@ class Command(BaseCommand):
                     {"key": "team_throughput"},
                 ],
             },
+            {
+                "key": "maturity",
+                "name": "Maturity",
+                "measures": [
+                    {"key": "ci_feedback_time"},
+                ],
+            },
         ]
 
         for subcharacteristic in supported_subcharacteristics:
@@ -324,6 +331,7 @@ class Command(BaseCommand):
                 'name': 'Reliability',
                 'subcharacteristics': [
                     {'key': 'testing_status'},
+                    {'key': 'reliability'},
                 ],
             },
             {
