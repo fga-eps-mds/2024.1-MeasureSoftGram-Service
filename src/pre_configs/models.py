@@ -356,6 +356,8 @@ class PreConfig(models.Model):
             'test_coverage': 'test_coverage',
             'commented_file_density': 'comment_files_density',
             'duplication_absense': 'absence_of_duplications',
+            'ci_feedback_time': 'ci_feedback_time',
+            'team_throughput': 'team_throughput',
         }
 
         for characteristic in data['characteristics']:

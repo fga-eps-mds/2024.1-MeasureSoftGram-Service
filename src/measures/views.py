@@ -77,7 +77,13 @@ class CalculateMeasuresViewSet(
                 core_params['measures'].append(
                     {
                         'key': measure.key,
-                        'parameters': metric_params,
+                        'metrics': [
+                            {
+                                "key": key,
+                                "value": [float(v) for v in value] if isinstance(value, list) else [float(value)]
+                            }
+                            for key, value in metric_params.items()
+                        ]
                     }
                 )
         # 5. Pega as configurações das thresholds

@@ -364,7 +364,12 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             'functions',
             'comment_lines_density',
             'duplicated_lines_density',
+            'total_issues',
+            'resolved_issues',
+            'sum_ci_feedback_times',
+            'total_builds',
         ]
+        
         uts_values = ['test_execution_time', 'tests']
         trk_values = ['test_failures', 'test_errors']
 
@@ -501,6 +506,10 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             'functions',
             'comment_lines_density',
             'duplicated_lines_density',
+            'total_issues',
+            'resolved_issues',
+            'sum_ci_feedback_times',
+            'total_builds',
         ]
         uts_values = ['test_execution_time', 'tests']
         trk_values = ['test_failures', 'test_errors']
