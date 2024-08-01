@@ -537,16 +537,15 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     metric=metric,
                     repository=self.repository,
                     qualifier=qualifier,
-                    created_at=created_at,
+                    created_at=now,
                 )
-                if metric == 'tests':
-                    CollectedMetric.objects.create(
-                        value=0.2,
-                        metric=metric,
-                        repository=self.repository,
-                        qualifier=qualifier,
-                        created_at=now - dt.timedelta(days=1)
-                    )
+                CollectedMetric.objects.create(
+                    value=0.2,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
+                    created_at=now - dt.timedelta(hours=1)
+                )
 
         listed_values = [
             'total_issues',
