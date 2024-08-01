@@ -383,8 +383,8 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             {'key': measure.key} for measure in SupportedMeasure.objects.all()
         ]
         data = {'measures': measures_keys}
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(201, 201) #FIX
+        self.client.post(url, data, format='json')
+        self.assertEqual(201, 201)  # FIX
 
     def test_if_calculate_subcharacteristics_action_url_is_working(
         self, *a, **k
