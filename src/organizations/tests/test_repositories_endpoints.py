@@ -378,6 +378,12 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     repository=self.repository,
                     qualifier=qualifier,
                 )
+                CollectedMetric.objects.create(
+                    value=0.2,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
+                )
 
         measures_keys = [
             {'key': measure.key} for measure in SupportedMeasure.objects.all()
