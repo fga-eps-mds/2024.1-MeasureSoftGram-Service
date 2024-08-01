@@ -151,7 +151,7 @@ class Command(BaseCommand):
             if request.ok:
                 data = request.json()
             else:
-                data = staticfilsonarqube_supes.SONARQUBE_AVAILABLE_METRICS
+                data = staticfiles.SONARQUBE_AVAILABLE_METRICS
         except Exception:
             data = staticfiles.SONARQUBE_AVAILABLE_METRICS
 
