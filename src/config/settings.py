@@ -300,11 +300,11 @@ GITHUB_METRICS = [
 ]
 
 GITHUB_SUPPORTED_MEASURES = [
-{
-    'team_throughput': {
-        'metrics': ['resolved_issues', 'total_issues']
+    {
+        'team_throughput': {
+            'metrics': ['resolved_issues', 'total_issues']
+        }
     }
-}
 ]
 
 SCHEDULER_CONFIG = {
