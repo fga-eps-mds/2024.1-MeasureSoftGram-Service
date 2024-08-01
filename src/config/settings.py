@@ -33,15 +33,15 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "t", "1")
 
 # Allowed origins on CORS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     os.getenv(
-        'FRONTEND_DEV_URL',
-        'https://2024-1-measure-soft-gram.vercel.app',
+        "FRONTEND_DEV_URL",
+        "https://2024-1-measure-soft-gram.vercel.app",
     ),
     os.getenv(
-        'FRONTEND_PROD_URL',
-        'https://2024-1-measure-soft-gram.vercel.app',
+        "FRONTEND_PROD_URL",
+        "https://2024-1-measure-soft-gram.vercel.app",
     ),
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -293,28 +293,27 @@ GITHUB_METRICS = [
         "metric_type": "INT",
     },
     {
-        "key": "resolved_issues",
+        "key": "number_of_resolved_issues_with_US_label_in_the_last_x_days",
         "name": "Total resolved issues count on the release period",
         "metric_type": "INT",
     },
     {
-        "key": "total_issues",
+        "key": "total_number_of_issues_with_US_label_in_the_last_x_days",
         "name": "Total issues count on the release period",
         "metric_type": "INT",
-    }
+    },
 ]
 
 GITHUB_SUPPORTED_MEASURES = [
     {
-        'team_throughput': {
-            'metrics': ['resolved_issues', 'total_issues']
+        "team_throughput": {
+            "metrics": [
+                "number_of_resolved_issues_with_US_label_in_the_last_x_days",
+                "total_number_of_issues_with_US_label_in_the_last_x_days",
+            ]
         }
     },
-    {
-        'ci_feedback_time': {
-            'metrics': ['sum_ci_feedback_times', 'total_builds']
-        }
-    }
+    {"ci_feedback_time": {"metrics": ["sum_ci_feedback_times", "total_builds"]}},
 ]
 
 SCHEDULER_CONFIG = {
