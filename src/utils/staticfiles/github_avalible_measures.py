@@ -1,6 +1,6 @@
 # flake8: noqa
 # pylint: skip-file
-GITHUB_AVAILABLE_METRICS = {
+GITHUB_AVAILABLE_MEASURES = {
     'metrics': [
         {
             'id': '8000',

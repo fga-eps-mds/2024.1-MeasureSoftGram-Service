@@ -288,8 +288,8 @@ GITHUB_METRICS = [
         "metric_type": "INT",
     },
     {
-        "key": "closed_issues",
-        "name": "Total closed issues count on the release period",
+        "key": "resolved_issues",
+        "name": "Total resolved issues count on the release period",
         "metric_type": "INT",
     },
     {
