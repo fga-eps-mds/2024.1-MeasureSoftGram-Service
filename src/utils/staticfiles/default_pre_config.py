@@ -4,11 +4,11 @@ DEFAULT_PRE_CONFIG = {
     'characteristics': [
         {
             'key': 'reliability',
-            'weight': 50,
+            'weight': 34,
             'subcharacteristics': [
                 {
                     'key': 'testing_status',
-                    'weight': 100,
+                    'weight': 50,
                     'measures': [
                         {
                             'key': 'passed_tests',
@@ -46,7 +46,7 @@ DEFAULT_PRE_CONFIG = {
         },
         {
             'key': 'maintainability',
-            'weight': 50,
+            'weight': 33,
             'subcharacteristics': [
                 {
                     'key': 'modifiability',
