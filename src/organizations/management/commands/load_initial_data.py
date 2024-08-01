@@ -100,41 +100,41 @@ class Command(BaseCommand):
                     )
                 )
 
-    # def create_github_suported_measures(self):
-    #     """
-    #     Função que popula banco de dados com todas as medidas que são
-    #     suportadas atualmente e as métricas que cada medida é dependente
-    #     """
-    #     for measure_data in settings.GITHUB_SUPPORTED_MEASURES:
-    #         measure_key = list(measure_data.keys())[0]
-    #         with contextlib.suppress(IntegrityError):
-    #             measure_name = utils.namefy(measure_key)
+    def create_github_suported_measures(self):
+        """
+        Função que popula banco de dados com todas as medidas que são
+        suportadas atualmente e as métricas que cada medida é dependente
+        """
+        for measure_data in settings.GITHUB_SUPPORTED_MEASURES:
+            measure_key = list(measure_data.keys())[0]
+            with contextlib.suppress(IntegrityError):
+                measure_name = utils.namefy(measure_key)
 
-    #             measure, _ = SupportedMeasure.objects.get_or_create(
-    #                 key=measure_key,
-    #                 name=measure_name,
-    #             )
+                measure, _ = SupportedMeasure.objects.get_or_create(
+                    key=measure_key,
+                    name=measure_name,
+                )
 
-    #             logger.info(f'Creating supported measure {measure_key}')
+                logger.info(f'Creating supported measure {measure_key}')
 
-    #             metrics_keys = {
-    #                 metric for metric in measure_data[measure_key]['metrics']
-    #             }
+                metrics_keys = {
+                    metric for metric in measure_data[measure_key]['metrics']
+                }
 
-    #             metrics = SupportedMetric.objects.filter(
-    #                 key__in=metrics_keys,
-    #             )
+                metrics = SupportedMetric.objects.filter(
+                    key__in=metrics_keys,
+                )
 
-    #             if metrics.count() != len(metrics_keys):
-    #                 raise exceptions.MissingSupportedMetricException()
+                if metrics.count() != len(metrics_keys):
+                    raise exceptions.MissingSupportedMetricException()
 
-    #             measure.metrics.set(metrics)
-    #             logger.info(
-    #                 (
-    #                     f"Metrics {','.join(metrics_keys)} "
-    #                     f'were associated to {measure_key}'
-    #                 )
-    #             )
+                measure.metrics.set(metrics)
+                logger.info(
+                    (
+                        f"Metrics {','.join(metrics_keys)} "
+                        f'were associated to {measure_key}'
+                    )
+                )
 
     def create_supported_metrics(self):
         self.create_sonarqube_supported_metrics()
