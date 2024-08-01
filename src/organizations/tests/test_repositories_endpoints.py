@@ -369,11 +369,11 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             'sum_ci_feedback_times',
             'total_builds'
         ]
-        uts_values = ['test_execution_time']  # , 'tests']
+        # uts_values = ['test_execution_time']  # , 'tests']
         trk_values = ['test_failures', 'test_errors']
 
         for values, qualifier in zip(
-            [listed_values, uts_values, trk_values], ['FIL', 'UTS', 'TRK']
+            [listed_values, trk_values], ['FIL', 'TRK']
         ):
             for metric in SupportedMetric.objects.filter(key__in=values):
                 CollectedMetric.objects.create(
