@@ -369,7 +369,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             'sum_ci_feedback_times',
             'total_builds',
         ]
-        
+
         uts_values = ['test_execution_time', 'tests']
         trk_values = ['test_failures', 'test_errors']
 
@@ -525,6 +525,14 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     qualifier=qualifier,
                     created_at=created_at,
                 )
+                if metric == 'tests':
+                    CollectedMetric.objects.create(
+                        value=0.2,
+                        metric=metric,
+                        repository=self.repository,
+                        qualifier=qualifier,
+                        created_at=now - dt.timedelta(days=7)
+                    )
 
         data = {
             'measures': measures_keys,
