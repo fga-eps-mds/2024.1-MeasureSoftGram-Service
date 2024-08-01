@@ -26,9 +26,7 @@ from measures.models import CalculatedMeasure, SupportedMeasure
 from metrics.models import CollectedMetric, SupportedMetric
 from organizations.models import Organization, Product, Repository
 from pre_configs.models import PreConfig
-from staticfiles import (
-    SONARQUBE_SUPPORTED_MEASURES
-)
+from staticfiles import SONARQUBE_SUPPORTED_MEASURES
 from subcharacteristics.models import (
     CalculatedSubCharacteristic,
     SupportedSubCharacteristic,
