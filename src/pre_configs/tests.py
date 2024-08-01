@@ -48,7 +48,7 @@ class TestConfigEnpoints(APITestCaseExpanded):
             pre_config_uri['get current pre-config']
         )
 
-        self.assertEquals(configs_resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(configs_resp.status_code, status.HTTP_200_OK)
         self.assertFalse(configs_resp.json()['created_config'])
 
     def test_user_created_configs(self):
@@ -84,7 +84,7 @@ class TestConfigEnpoints(APITestCaseExpanded):
             pre_config_uri['create a new pre-config'], data, format='json'
         )
 
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         configs_resp = self.request.get(
             pre_config_uri['get current pre-config']
@@ -102,5 +102,5 @@ class TestConfigEnpoints(APITestCaseExpanded):
                 id=configs_resp.json()['id']
             ),
         )
-        self.assertEquals(configs_resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(configs_resp.status_code, status.HTTP_200_OK)
         self.assertTrue(configs_resp.json()['created_config'])
