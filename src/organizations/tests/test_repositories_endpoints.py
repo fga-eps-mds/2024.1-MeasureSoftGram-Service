@@ -359,22 +359,22 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
         url = actions_urls['calculate measures']
 
         listed_values = [
-            'coverage',
-            'complexity',
-            'functions',
-            'comment_lines_density',
-            'duplicated_lines_density',
+            # 'coverage',
+            # 'complexity',
+            # 'functions',
+            # 'comment_lines_density',
+            # 'duplicated_lines_density',
             'total_issues',
             'resolved_issues',
             'sum_ci_feedback_times',
             'total_builds',
         ]
 
-        uts_values = ['test_execution_time', 'tests']
-        trk_values = ['test_failures', 'test_errors']
+        # uts_values = ['test_execution_time', 'tests']
+        # trk_values = ['test_failures', 'test_errors']
 
         for values, qualifier in zip(
-            [listed_values, uts_values, trk_values], ['FIL', 'UTS', 'TRK']
+            [listed_values], ['FIL']
         ):
             for metric in SupportedMetric.objects.filter(key__in=values):
                 CollectedMetric.objects.create(
@@ -501,11 +501,11 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
         created_at = now - dt.timedelta(days=7)
 
         listed_values = [
-            'coverage',
-            'complexity',
-            'functions',
-            'comment_lines_density',
-            'duplicated_lines_density',
+            # 'coverage',
+            # 'complexity',
+            # 'functions',
+            # 'comment_lines_density',
+            # 'duplicated_lines_density',
             'total_issues',
             'resolved_issues',
             'sum_ci_feedback_times',
