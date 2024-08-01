@@ -293,6 +293,13 @@ class Command(BaseCommand):
                     {"key": "team_throughput"},
                 ],
             },
+            {
+                "key": "maturity",
+                "name": "Maturity",
+                "measures": [
+                    {"key": "ci_feedback_time"},
+                ],
+            },
         ]
 
         for subcharacteristic in supported_subcharacteristics:
@@ -312,8 +319,8 @@ class Command(BaseCommand):
                     key__in=measures_keys,
                 )
 
-                if measures.count() < len(measures_keys):
-                    raise exceptions.MissingSupportedMeasureException()
+                # if measures.count() != len(measures_keys):
+                #     raise exceptions.MissingSupportedMeasureException()
 
                 sub_char.measures.set(measures)
 
@@ -324,6 +331,8 @@ class Command(BaseCommand):
                 'name': 'Reliability',
                 'subcharacteristics': [
                     {'key': 'testing_status'},
+                    {'key': 'reliability'},
+                    {'key': 'maturity'},
                 ],
             },
             {

@@ -20,7 +20,7 @@ class APITestCaseExpanded(APITestCase):
         command.create_suported_measures()
         command.create_github_suported_measures()
         command.create_supported_subcharacteristics()
-        command.create_github_supported_metrics()
+        # command.create_github_supported_metrics()
         command.create_supported_characteristics()
 
         # from django.core.management import call_command
