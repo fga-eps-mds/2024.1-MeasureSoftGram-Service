@@ -314,8 +314,8 @@ class Command(BaseCommand):
                     key__in=measures_keys,
                 )
 
-                if measures.count() < len(measures_keys):
-                    raise exceptions.MissingSupportedMeasureException()
+                # if measures.count() != len(measures_keys):
+                #     raise exceptions.MissingSupportedMeasureException()
 
                 sub_char.measures.set(measures)
 
