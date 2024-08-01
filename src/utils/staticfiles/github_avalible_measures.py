@@ -1,7 +1,7 @@
 # flake8: noqa
 # pylint: skip-file
 GITHUB_AVAILABLE_MEASURES = {
-    'metrics': [
+    'measures': [
         {
             'id': '8000',
             'key': 'resolved_issues_throughput',

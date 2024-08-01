@@ -18,8 +18,8 @@ class APITestCaseExpanded(APITestCase):
         command = LoadInitialDataCommand()
         command.create_supported_metrics()
         command.create_suported_measures()
-        command.create_suported_subcharacteristics()
-        command.create_suported_characteristics()
+        command.create_supported_subcharacteristics()
+        command.create_supported_characteristics()
 
         # from django.core.management import call_command
         # call_command("load_initial_data")
