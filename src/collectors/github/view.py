@@ -37,6 +37,7 @@ def import_github_metrics(data, repository):
             "path": metric["path"],
             "metric": supported_metrics[metric_key],
             "value": float(metric_value),
+            "qualifier": "FIL",  # TODO FIND OUT WHAT SHOULD IT BE
         }
 
         in_memory_metric = CollectedMetric(**obj)
