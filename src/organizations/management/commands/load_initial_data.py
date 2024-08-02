@@ -26,7 +26,7 @@ from measures.models import CalculatedMeasure, SupportedMeasure
 from metrics.models import CollectedMetric, SupportedMetric
 from organizations.models import Organization, Product, Repository
 from pre_configs.models import PreConfig
-from staticfiles import SONARQUBE_SUPPORTED_MEASURES
+from staticfiles import SUPPORTED_MEASURES
 from subcharacteristics.models import (
     CalculatedSubCharacteristic,
     SupportedSubCharacteristic,
@@ -45,7 +45,7 @@ from utils import (
 
 from .utils import (
     create_balance_matrix,
-    create_suported_characteristics,
+    create_supported_characteristics,
     get_random_goal_data,
 )
 
@@ -69,7 +69,43 @@ class Command(BaseCommand):
         Função que popula banco de dados com todas as medidas que são
         suportadas atualmente e as métricas que cada medida é dependente
         """
-        for measure_data in SONARQUBE_SUPPORTED_MEASURES:
+        for measure_data in SUPPORTED_MEASURES:
+            measure_key = list(measure_data.keys())[0]
+            with contextlib.suppress(IntegrityError):
+                measure_name = utils.namefy(measure_key)
+
+                measure, _ = SupportedMeasure.objects.get_or_create(
+                    key=measure_key,
+                    name=measure_name,
+                )
+
+                logger.info(f'Creating supported measure {measure_key}')
+
+                metrics_keys = {
+                    metric for metric in measure_data[measure_key]['metrics']
+                }
+
+                metrics = SupportedMetric.objects.filter(
+                    key__in=metrics_keys,
+                )
+
+                if metrics.count() != len(metrics_keys):
+                    raise exceptions.MissingSupportedMetricException()
+
+                measure.metrics.set(metrics)
+                logger.info(
+                    (
+                        f"Metrics {','.join(metrics_keys)} "
+                        f'were associated to {measure_key}'
+                    )
+                )
+
+    def create_github_suported_measures(self):
+        """
+        Função que popula banco de dados com todas as medidas que são
+        suportadas atualmente e as métricas que cada medida é dependente
+        """
+        for measure_data in settings.GITHUB_SUPPORTED_MEASURES:
             measure_key = list(measure_data.keys())[0]
             with contextlib.suppress(IntegrityError):
                 measure_name = utils.namefy(measure_key)
@@ -230,8 +266,8 @@ class Command(BaseCommand):
             get_entity_qty,
         )
 
-    def create_suported_subcharacteristics(self):
-        suported_subcharacteristics = [
+    def create_supported_subcharacteristics(self):
+        supported_subcharacteristics = [
             {
                 'key': 'modifiability',
                 'name': 'Modifiability',
@@ -250,16 +286,23 @@ class Command(BaseCommand):
                     {'key': 'passed_tests'},
                 ],
             },
-            # {
-            #     "key": "functional_completeness",
-            #     "name": "Functional Completeness",
-            #     "measures": [
-            #         {"key": "team_throughput"},
-            #     ],
-            # },
+            {
+                "key": "functional_completeness",
+                "name": "Functional Completeness",
+                "measures": [
+                    {"key": "team_throughput"},
+                ],
+            },
+            {
+                "key": "maturity",
+                "name": "Maturity",
+                "measures": [
+                    {"key": "ci_feedback_time"},
+                ],
+            },
         ]
 
-        for subcharacteristic in suported_subcharacteristics:
+        for subcharacteristic in supported_subcharacteristics:
             with contextlib.suppress(IntegrityError):
                 klass = SupportedSubCharacteristic
 
@@ -276,18 +319,20 @@ class Command(BaseCommand):
                     key__in=measures_keys,
                 )
 
-                if measures.count() != len(measures_keys):
-                    raise exceptions.MissingSupportedMeasureException()
+                # if measures.count() != len(measures_keys):
+                #     raise exceptions.MissingSupportedMeasureException()
 
                 sub_char.measures.set(measures)
 
-    def create_suported_characteristics(self):
-        suported_characteristics = [
+    def create_supported_characteristics(self):
+        supported_characteristics = [
             {
                 'key': 'reliability',
                 'name': 'Reliability',
                 'subcharacteristics': [
                     {'key': 'testing_status'},
+                    {'key': 'reliability'},
+                    {'key': 'maturity'},
                 ],
             },
             {
@@ -297,15 +342,15 @@ class Command(BaseCommand):
                     {'key': 'modifiability'},
                 ],
             },
-            # {
-            #     "key": "functional_suitability",
-            #     "name": "Functional Suitability",
-            #     "subcharacteristics": [
-            #         {"key": "functional_completeness"},
-            #     ]
-            # },
+            {
+                "key": "functional_suitability",
+                "name": "Functional Suitability",
+                "subcharacteristics": [
+                    {"key": "functional_completeness"},
+                ]
+            },
         ]
-        create_suported_characteristics(suported_characteristics)
+        create_supported_characteristics(supported_characteristics)
 
     def create_balance_matrix(self):
         characteristics = SupportedCharacteristic.objects.filter(
@@ -591,8 +636,9 @@ class Command(BaseCommand):
 
         self.create_supported_metrics()
         self.create_suported_measures()
-        self.create_suported_subcharacteristics()
-        self.create_suported_characteristics()
+        # self.create_github_suported_measures()
+        self.create_supported_subcharacteristics()
+        self.create_supported_characteristics()
         self.create_balance_matrix()
         self.create_fake_organizations()
         self.create_fake_products()

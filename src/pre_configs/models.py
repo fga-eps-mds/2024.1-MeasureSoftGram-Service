@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from util import Checker  # util do core
-from util.constants import AGGREGATED_NORMALIZED_MEASURES_MAPPING
-
+from resources.constants import AGGREGATED_NORMALIZED_MEASURES_MAPPING
 import utils
 from characteristics.models import SupportedCharacteristic
 from measures.models import SupportedMeasure
@@ -357,6 +356,8 @@ class PreConfig(models.Model):
             'test_coverage': 'test_coverage',
             'commented_file_density': 'comment_files_density',
             'duplication_absense': 'absence_of_duplications',
+            'ci_feedback_time': 'ci_feedback_time',
+            'team_throughput': 'team_throughput',
         }
 
         for characteristic in data['characteristics']:

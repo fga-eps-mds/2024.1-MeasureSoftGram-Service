@@ -33,15 +33,15 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "t", "1")
 
 # Allowed origins on CORS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     os.getenv(
-        'FRONTEND_DEV_URL',
-        'https://2024-1-measure-soft-gram.vercel.app',
+        "FRONTEND_DEV_URL",
+        "https://2024-1-measure-soft-gram.vercel.app",
     ),
     os.getenv(
-        'FRONTEND_PROD_URL',
-        'https://2024-1-measure-soft-gram.vercel.app',
+        "FRONTEND_PROD_URL",
+        "https://2024-1-measure-soft-gram.vercel.app",
     ),
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -283,8 +283,13 @@ if DEBUG:
 
 GITHUB_METRICS = [
     {
-        "key": "ci_feedback_time",
-        "name": "Time spent in seconds on the release build worflow",
+        "key": "sum_ci_feedback_times",
+        "name": "Sum of time spent in seconds on builds",
+        "metric_type": "INT",
+    },
+    {
+        "key": "total_builds",
+        "name": "Total build count",
         "metric_type": "INT",
     },
     {
@@ -296,164 +301,19 @@ GITHUB_METRICS = [
         "key": "total_issues",
         "name": "Total issues count on the release period",
         "metric_type": "INT",
-    }
-    # {
-    #     'key': 'number_of_resolved_issues_in_the_last_x_days',
-    #     'name': 'Number of resolved issues in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'issues_repository_url',
-    #         'issues_metrics_x_days',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'issues_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_number_of_issues_resolved_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'number_of_resolved_issues_with_US_label_in_the_last_x_days',
-    #     'name': 'Number of resolved issues with US label in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'issues_repository_url',
-    #         'issues_metrics_x_days',
-    #         'user_story_label',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'issues_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_number_of_issues_resolved_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #                 'label': 'user_story_label',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'number_of_issues_with_bug_label_in_the_last_x_days',
-    #     'name': 'Number of issues with bug label in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'issues_repository_url',
-    #         'issues_metrics_x_days',
-    #         'bug_label',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'issues_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_total_number_of_issues_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #                 'label': 'bug_label',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'total_number_of_issues_with_US_label_in_the_last_x_days',
-    #     'name': 'Total number of issues with US label in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'issues_repository_url',
-    #         'issues_metrics_x_days',
-    #         'user_story_label',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'issues_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_total_number_of_issues_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #                 'label': 'user_story_label',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'total_number_of_issues_in_the_last_x_days',
-    #     'name': 'Total number of issues in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'issues_repository_url',
-    #         'issues_metrics_x_days',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'issues_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_total_number_of_issues_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'number_of_build_pipelines_in_the_last_x_days',
-    #     'name': 'Number of build pipelines in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'pipelines_repository_url',
-    #         'pipeline_metrics_x_days',
-    #         'build_pipeline_names',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'pipelines_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_the_number_of_build_pipelines_executed_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #                 'build_pipeline_names': 'build_pipeline_names',
-    #             },
-    #         },
-    #     },
-    # },
-    # {
-    #     'key': 'runtime_sum_of_build_pipelines_in_the_last_x_days',
-    #     'name': 'Runtime sum of build pipelines in the last x days',
-    #     'metric_type': 'INT',
-    #     'api_params': [
-    #         'pipelines_repository_url',
-    #         'pipeline_metrics_x_days',
-    #         'build_pipeline_names',
-    #     ],
-    #     'methods_params_map': {
-    #         '__init__': {
-    #             'url': 'pipelines_repository_url',
-    #             'token': 'github_token',
-    #         },
-    #         'metric_method': {
-    #             'method_name': 'get_the_sum_of_their_durations_in_the_last_x_days',
-    #             'method_params': {
-    #                 'x': 'issues_metrics_x_days',
-    #                 'build_pipeline_names': 'build_pipeline_names',
-    #             },
-    #         },
-    #     },
-    # },
+    },
+]
+
+GITHUB_SUPPORTED_MEASURES = [
+    {
+        "team_throughput": {
+            "metrics": [
+                "number_of_resolved_issues_with_US_label_in_the_last_x_days",
+                "total_number_of_issues_with_US_label_in_the_last_x_days",
+            ]
+        }
+    },
+    {"ci_feedback_time": {"metrics": ["sum_ci_feedback_times", "total_builds"]}},
 ]
 
 SCHEDULER_CONFIG = {

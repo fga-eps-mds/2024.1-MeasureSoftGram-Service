@@ -11,7 +11,7 @@ from subcharacteristics.models import SupportedSubCharacteristic
 from utils import exceptions, staticfiles
 
 
-def create_suported_characteristics(suported_characteristics):
+def create_supported_characteristics(suported_characteristics):
     for characteristic in suported_characteristics:
         with contextlib.suppress(IntegrityError):
             klass = SupportedCharacteristic
@@ -30,8 +30,8 @@ def create_suported_characteristics(suported_characteristics):
                 key__in=subcharacteristics_keys,
             )
 
-            if subcharacteristics.count() != len(subcharacteristics_keys):
-                raise exceptions.MissingSupportedSubCharacteristicError()
+            # if subcharacteristics.count() != len(subcharacteristics_keys):
+            #     raise exceptions.MissingSupportedSubCharacteristicError()
 
             charact.subcharacteristics.set(subcharacteristics)
 

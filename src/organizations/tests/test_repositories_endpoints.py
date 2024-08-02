@@ -365,6 +365,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
             'comment_lines_density',
             'duplicated_lines_density',
         ]
+
         uts_values = ['test_execution_time', 'tests']
         trk_values = ['test_failures', 'test_errors']
 
@@ -378,7 +379,29 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     repository=self.repository,
                     qualifier=qualifier,
                 )
+                CollectedMetric.objects.create(
+                    value=0.2,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
+                )
 
+        listed_values = [
+            'total_issues',
+            'resolved_issues',
+            'sum_ci_feedback_times',
+            'total_builds',
+        ]
+        for values, qualifier in zip(
+            [listed_values], ['FIL']
+        ):
+            for metric in SupportedMetric.objects.filter(key__in=values):
+                CollectedMetric.objects.create(
+                    value=1,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
+                )
         measures_keys = [
             {'key': measure.key} for measure in SupportedMeasure.objects.all()
         ]
@@ -514,7 +537,31 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
                     metric=metric,
                     repository=self.repository,
                     qualifier=qualifier,
-                    created_at=created_at,
+                    created_at=now,
+                )
+                CollectedMetric.objects.create(
+                    value=0.2,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
+                    created_at=now - dt.timedelta(hours=1)
+                )
+
+        listed_values = [
+            'total_issues',
+            'resolved_issues',
+            'sum_ci_feedback_times',
+            'total_builds',
+        ]
+        for values, qualifier in zip(
+            [listed_values], ['FIL']
+        ):
+            for metric in SupportedMetric.objects.filter(key__in=values):
+                CollectedMetric.objects.create(
+                    value=1,
+                    metric=metric,
+                    repository=self.repository,
+                    qualifier=qualifier,
                 )
 
         data = {

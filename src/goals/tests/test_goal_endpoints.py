@@ -10,7 +10,7 @@ from rest_framework.reverse import reverse
 from goals.models import Goal
 from organizations.management.commands.utils import (
     create_a_preconfig,
-    create_suported_characteristics,
+    create_supported_characteristics,
 )
 from organizations.models import Product, Repository
 from utils.tests import APITestCaseExpanded
@@ -43,7 +43,7 @@ class GoalEndpointsTestCase(APITestCaseExpanded):
                 ],
             },
         ]
-        create_suported_characteristics(characteristics)
+        create_supported_characteristics(characteristics)
         characteristics_keys = [item['key'] for item in characteristics]
 
         self.org = self.get_organization()

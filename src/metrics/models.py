@@ -58,12 +58,26 @@ class SupportedMetric(models.Model):
             'duplicated_lines_density',
         }
 
+        github_values = [
+            'total_issues',
+            'resolved_issues',
+            'sum_ci_feedback_times',
+            'total_builds',
+        ]
+
         uts_values: Set[str] = {'test_execution_time', 'tests'}
 
         if self.key in listed_values:
             return self.get_latest_metric_values(repository, qualifier='FIL')
         elif self.key in uts_values:
             return self.get_latest_metric_values(repository, qualifier='UTS')
+        elif self.key in github_values:
+            latest_metric = self.collected_metrics.filter(
+                repository=repository,
+                qualifier='FIL',
+            ).first()
+            if latest_metric:
+                return latest_metric.value
         elif self.key not in listed_values.union(uts_values):
             latest_metric = self.collected_metrics.filter(
                 repository=repository,
