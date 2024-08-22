@@ -206,3 +206,14 @@ class AccountsViews(APITestCaseExpanded):
         self.assertEqual(
             Token.objects.get(user=self.user).key, response.json()['key']
         )
+
+
+    def test_github_token(self):
+        url = reverse('github-token')
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Token '
+            + Token.objects.create(user=self.user).key
+        )
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, 200, response.json())
