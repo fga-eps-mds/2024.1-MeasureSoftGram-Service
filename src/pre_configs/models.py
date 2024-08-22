@@ -96,12 +96,7 @@ class PreConfig(models.Model):
             if characteristic['key'] == characteristic_key:
                 return characteristic['weight']
 
-        raise utils.exceptions.CharacteristicNotDefinedInPreConfiguration(
-            (
-                f'Characteristic {characteristic_key} '
-                'not defined in pre-configuration',
-            )
-        )
+        return None
 
     def get_characteristics_keys(self):
         return [charac['key'] for charac in self.data['characteristics']]

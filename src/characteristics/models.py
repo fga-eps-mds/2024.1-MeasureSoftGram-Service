@@ -52,15 +52,16 @@ class SupportedCharacteristic(models.Model):
         for characteristic in self.__class__.objects.all():
             key = characteristic.key
             weight = pre_config.get_characteristic_weight(key)
-            value = characteristic.get_latest_characteristic_value()
+            if weight:
+                value = characteristic.get_latest_characteristic_value()
 
-            chars_params.append(
-                {
-                    'key': key,
-                    'value': value,
-                    'weight': weight,
-                }
-            )
+                chars_params.append(
+                    {
+                        'key': key,
+                        'value': value,
+                        'weight': weight,
+                    }
+                )
 
         return chars_params
 
