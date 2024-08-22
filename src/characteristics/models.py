@@ -81,15 +81,16 @@ class SupportedCharacteristic(models.Model):
         for subcharacteristic in self.subcharacteristics.all():
             key = subcharacteristic.key
             weight = pre_config.get_subcharacteristic_weight(key)
-            value = subcharacteristic.get_latest_subcharacteristic_value()
+            if weight: 
+                value = subcharacteristic.get_latest_subcharacteristic_value()
 
-            subchars_params.append(
-                {
-                    'key': key,
-                    'value': value,
-                    'weight': weight,
-                }
-            )
+                subchars_params.append(
+                    {
+                        'key': key,
+                        'value': value,
+                        'weight': weight,
+                    }
+                )
 
         return subchars_params
 
