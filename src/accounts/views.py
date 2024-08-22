@@ -1,4 +1,5 @@
 from django.conf import settings
+import requests
 
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
@@ -16,6 +17,7 @@ from accounts.serializers import (
     AccountsCreateSerializer,
     AccountsLoginSerializer,
     AccountsRetrieveSerializer,
+    GitHubAccessTokenRetrieveSerializer,
     UserListSerializer,
 )
 
@@ -105,3 +107,23 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
+
+
+class RetrieveGitHubTokenViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet para o github token do usuário a partir do código
+    """
+
+    serializer_class = GitHubAccessTokenRetrieveSerializer
+
+    def retrieve(self, request):
+        code = request.query_params.get('code')
+        print('CODE',code)
+
+        headers = {'Accept': 'application/json'}
+
+        url = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}&client_secret={settings.GITHUB_SECRET}'
+
+        response = requests.get(url, headers=headers)
+
+        return Response(response.json(), status=status.HTTP_200_OK)
