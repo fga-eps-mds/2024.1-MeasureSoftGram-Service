@@ -89,12 +89,7 @@ class PreConfig(models.Model):
                 if subcharacteristic['key'] == subcharacteristic_key:
                     return subcharacteristic['weight']
 
-        raise utils.exceptions.SubCharacteristicNotDefinedInPreConfiguration(
-            (
-                f'Subcharacteristic {subcharacteristic_key} '
-                'not defined in pre-configuration',
-            )
-        )
+        return None
 
     def get_characteristic_weight(self, characteristic_key: str) -> float:
         for characteristic in self.data['characteristics']:
