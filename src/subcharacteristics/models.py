@@ -63,13 +63,14 @@ class SupportedSubCharacteristic(models.Model):
 
         for measure in self.measures.all():
             weight = pre_config.get_measure_weight(measure.key)
-            measures_params.append(
-                {
-                    'key': measure.key,
-                    'value': measure.get_latest_measure_value(),
-                    'weight': weight,
-                }
-            )
+            if weight:
+                measures_params.append(
+                    {
+                        'key': measure.key,
+                        'value': measure.get_latest_measure_value(),
+                        'weight': weight,
+                    }
+                )
 
         return measures_params
 
