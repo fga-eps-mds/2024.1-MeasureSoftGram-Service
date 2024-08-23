@@ -77,9 +77,7 @@ class PreConfig(models.Model):
                     if measure['key'] == measure_key:
                         return measure['weight']
 
-        raise utils.exceptions.MeasureNotDefinedInPreConfiguration(
-            f'Measure {measure_key} not defined in pre-configuration',
-        )
+        return None
 
     def get_subcharacteristic_weight(
         self, subcharacteristic_key: str
