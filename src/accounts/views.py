@@ -122,8 +122,17 @@ class RetrieveGitHubTokenViewSet(viewsets.ReadOnlyModelViewSet):
 
         headers = {'Accept': 'application/json'}
 
-        url = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}&client_secret={settings.GITHUB_SECRET}'
+        urlToken = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}&client_secret={settings.GITHUB_SECRET}'
+        response = requests.get(urlToken, headers=headers)
 
-        response = requests.get(url, headers=headers)
+        headersUser = {'Authorization': f'Bearer {response.json()["access_token"]}'}
 
-        return Response(response.json(), status=status.HTTP_200_OK)
+        urlUser = f'https://api.github.com/user'
+        responseUser = requests.get(urlUser, headers=headersUser)
+
+
+
+        urlRepos = f'https://api.github.com/search/repositories?q=user:{responseUser.json()["login"]}'
+        responseRepos = requests.get(urlRepos)
+
+        return Response(responseRepos.json(), status=status.HTTP_200_OK)
