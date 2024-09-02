@@ -353,9 +353,7 @@ class Command(BaseCommand):
         create_supported_characteristics(supported_characteristics)
 
     def create_balance_matrix(self):
-        characteristics = SupportedCharacteristic.objects.filter(
-            key__in=staticfiles.DEFAULT_BALANCE_MATRIX.keys(),
-        )
+        characteristics = SupportedCharacteristic.objects.all()
         create_balance_matrix(characteristics)
 
     def create_fake_calculated_characteristics(self, repository):

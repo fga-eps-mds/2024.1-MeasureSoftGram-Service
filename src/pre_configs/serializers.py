@@ -45,3 +45,21 @@ class PreConfigSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(exc) from exc
 
         return attrs
+class MeasureSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    weight = serializers.IntegerField()
+    min_threshold = serializers.IntegerField()
+    max_threshold = serializers.IntegerField()
+
+class SubCharacteristicSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    weight = serializers.IntegerField()
+    measures = serializers.ListField(child=MeasureSerializer())
+
+class CharacteristicSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    weight = serializers.IntegerField()
+    subcharacteristics = serializers.ListField(child=SubCharacteristicSerializer())
+
+class DefaultPreConfigSerializer(serializers.Serializer):
+    characteristics = serializers.ListField(child=CharacteristicSerializer())
