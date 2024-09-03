@@ -7,8 +7,8 @@ from accounts.views import (
     LoginViewSet,
     RetrieveAPIAcessTokenViewSet,
     RetrieveAccountViewSet,
-    RetrieveGitHubTokenViewSet,
     UserListViewSet,
+    UserRepos
 )
 
 urlpatterns = [
@@ -52,9 +52,9 @@ urlpatterns = [
                     name='user-list',
                 ),
                  re_path(
-                    r'^github-token/$',
-                    RetrieveGitHubTokenViewSet.as_view({'get': 'retrieve'}),
-                    name='github-token',
+                    r'^user-repos/$',
+                    UserRepos.as_view({'get': 'retrieve'}),
+                    name='user-repos',
                 ),
             ]
         ),

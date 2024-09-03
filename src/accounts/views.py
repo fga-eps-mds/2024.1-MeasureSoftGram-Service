@@ -109,16 +109,15 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserListSerializer
 
 
-class RetrieveGitHubTokenViewSet(viewsets.ReadOnlyModelViewSet):
+class UserRepos(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet para o github token do usuário a partir do código
+    ViewSet para os repositórios do github do user a partir de seu code
     """
 
     serializer_class = GitHubAccessTokenRetrieveSerializer
 
     def retrieve(self, request):
         code = request.query_params.get('code')
-        print('CODE',code)
 
         headers = {'Accept': 'application/json'}
 
