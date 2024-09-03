@@ -14,6 +14,7 @@ from organizations.models import Repository
 from metrics.models import CollectedMetric, SupportedMetric
 from measures.models import SupportedMeasure
 from metrics.serializers import CollectedMetricSerializer
+from subcharacteristics.models import SupportedSubCharacteristic
 from utils import namefy
 from rest_framework.response import Response
 
@@ -52,17 +53,15 @@ class MathModelServices():
         char_keys, subchar_keys, measure_keys, metric_keys = parse_pre_config(config)
         
         metrics = self.collect_metrics(data, repository)
-        for metric in metrics: 
-            print("aqui ", metric.__dict__)
         measures = self.calculate_measures(
             measure_keys
         )
-        # subcharacteristics = collect_subcharacteristics(
-        #     measures
-        # )
-        # characteristics = collect_characteristics(
-        #     subcharacteristics
-        # )
+        subcharacteristics = self.calculate_sucharacteristics(
+            measures
+        )
+        characteristics = self.calculcate_characterisctics(
+            subcharacteristics
+        )
         #SO SALVAR QUANDO TUDO DER CERTO
         saved_metrics = CollectedMetric.objects.bulk_create(metrics)
             #CollectedMetricSerializer(saved_metrics, many=True).data
@@ -72,7 +71,7 @@ class MathModelServices():
 
 
     def collect_metrics(self, data, repository):
-        
+
         supported_metrics = {
             supported_metric.key: supported_metric
             for supported_metric in SupportedMetric.objects.all()
@@ -192,14 +191,81 @@ class MathModelServices():
                     repository=repository
                 )
             )
-
-        CalculatedMeasure.objects.bulk_create(calculated_measures)
+        return calculate_measures
+       # CalculatedMeasure.objects.bulk_create(calculated_measures)
 
         # 7. Retornando o resultado
-        serializer = LatestMeasuresCalculationsRequestSerializer(
-            qs,
-            many=True
-            context=self.get_serializer_context(),
+        # serializer = LatestMeasuresCalculationsRequestSerializer(
+        #     qs,
+        #     many=True
+        #     context=self.get_serializer_context(),
+        # )
+
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def calculate_sucharacteristics(self, subcharacteristics_keys): 
+        # 2. get queryset
+        
+        qs = SupportedSubCharacteristic.objects.filter(
+            key__in=subcharacteristics_keys
+        ).prefetch_related(
+            'measures',
+            'measures__calculated_measures',
         )
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        product = self.get_product()
+        pre_config = product.pre_configs.first()
+
+        # 3. get core json response
+        core_params = {'subcharacteristics': []}
+        subchar: SupportedSubCharacteristic
+
+        for subchar in qs:
+            try:
+                measure_params = subchar.get_latest_measure_params(pre_config)
+
+            except utils.exceptions.MeasureNotDefinedInPreConfiguration as exc:
+                return Response(
+                    {'error': str(exc)},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
+            core_params['subcharacteristics'].append(
+                {
+                    'key': subchar.key,
+                    'measures': measure_params,
+                }
+            )
+
+        calculate_result = calculate_subcharacteristics(core_params)
+
+        # 4. Save data
+        calculated_values = {
+            subcharacteristic['key']: subcharacteristic['value']
+            for subcharacteristic in calculate_result['subcharacteristics']
+        }
+
+        calculated_subcharacteristics = []
+
+        repository = self.get_repository()
+
+        subchar: SupportedSubCharacteristic
+        for subchar in qs:
+            value = calculated_values[subchar.key]
+
+            calculated_subcharacteristics.append(
+                CalculatedSubCharacteristic(
+                    subcharacteristic=subchar,
+                    value=value,
+                    repository=repository,
+                    created_at=created_at,
+                )
+            )
+
+        CalculatedSubCharacteristic.objects.bulk_create(
+            calculated_subcharacteristics
+        )
+
+
+    def calculcate_characterisctics(): 
+        pass
