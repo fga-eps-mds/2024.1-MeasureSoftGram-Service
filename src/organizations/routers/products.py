@@ -14,6 +14,7 @@ from organizations.views import (
 from pre_configs.views import (
     CreatePreConfigModelViewSet,
     CurrentPreConfigModelViewSet,
+    DefaultPreConfigModelViewSet,
 )
 from releases.views import CreateReleaseModelViewSet, ReleaseListAllModelViewSet
 
@@ -91,6 +92,11 @@ class ProductRouter(Router):
                 'name': 'current/pre-config',
                 'view': CurrentPreConfigModelViewSet,
                 'basename': 'current-pre-config',
+            },
+            {
+                'name': 'default/pre-config',
+                'view': DefaultPreConfigModelViewSet,
+                'basename': 'default-pre-config',
             },
             {
                 'name': 'create/pre-config',

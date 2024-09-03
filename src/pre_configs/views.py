@@ -5,8 +5,10 @@ from rest_framework.response import Response
 from organizations.models import Product
 from pre_configs.models import PreConfig
 from measures.models import SupportedMeasure
-from pre_configs.serializers import PreConfigSerializer
+from pre_configs.serializers import DefaultPreConfigSerializer, PreConfigSerializer
 from staticfiles import SUPPORTED_MEASURES
+
+from utils import staticfiles
 
 
 class CurrentPreConfigModelViewSet(
@@ -27,6 +29,25 @@ class CurrentPreConfigModelViewSet(
         product = self.get_product()
         latest_pre_config = product.pre_configs.first()
         serializer = PreConfigSerializer(latest_pre_config)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class DefaultPreConfigModelViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = PreConfig.objects.all()
+    serializer_class = PreConfigSerializer
+
+    def get_product(self):
+        return get_object_or_404(
+            Product,
+            id=self.kwargs["product_pk"],
+        )
+
+    def list(self, request, *args, **kwargs):
+        pre_config = staticfiles.DEFAULT_PRE_CONFIG
+        serializer = DefaultPreConfigSerializer(pre_config)
         return Response(serializer.data, status.HTTP_200_OK)
 
 

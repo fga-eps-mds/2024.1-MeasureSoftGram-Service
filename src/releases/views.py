@@ -68,10 +68,8 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
 
         release = Release.objects.filter(
             product=product_key,
-            start_at__gte=init_date,
             start_at__lte=final_date,
             end_at__gte=init_date,
-            end_at__lte=final_date,
         ).first()
 
         if release:
