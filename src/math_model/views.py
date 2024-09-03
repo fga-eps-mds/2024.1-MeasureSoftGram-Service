@@ -1,6 +1,5 @@
 from math_model.serializer import MetricsSerializer
 from rest_framework import mixins, viewsets, status
-from rest_framework.generics import get_object_or_404
 from metrics.models import SupportedMetric
 from measures.models import SupportedMeasure
 from subcharacteristics.models import SupportedSubCharacteristic
@@ -31,96 +30,11 @@ class CalculateMathModelViewSet(
         serializer = PreConfigSerializer(config)
         repository = services.get_repository()
         print(serializer.data)
+        #try:  
         services.calculate_all(request.data, repository, serializer.data)
-        
-        
-
-
-
-
-
-
-
-
-
-
-        # serializer = MetricsSerializer(
-        #     data=request.data
-        # )
-        # serializer.is_valid(raise_exception=True)
-
-        # data = serializer.validated_data
-        # created_at = data['created_at']
-
-        # # 2. Get queryset
-        # characteristics_keys = [
-        #     characteristic['key'] for characteristic in data['characteristics']
-        # ]
-        # qs = SupportedCharacteristic.objects.filter(
-        #     key__in=characteristics_keys
-        # ).prefetch_related(
-        #     'subcharacteristics',
-        #     'subcharacteristics__calculated_subcharacteristics',
-        # )
-
-        # # 3. Create Core request
-
-        # core_params = {'characteristics': []}
-
-        # char: SupportedCharacteristic
-        # for char in qs:
-        #     try:
-        #         subchars_params = char.get_latest_subcharacteristics_params(
-        #             pre_config,
-        #         )
-
-        #     except SubCharacteristicNotDefinedInPreConfiguration as exc:
-        #         return Response(
-        #             {'error': str(exc)},
-        #             status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        #         )
-
-        #     core_params['characteristics'].append(
-        #         {
-        #             'key': char.key,
-        #             'subcharacteristics': subchars_params,
-        #         }
-        #     )
-
-        # calculate_result = calculate_characteristics(core_params)
-
-        # calculated_values = {
-        #     characteristic['key']: characteristic['value']
-        #     for characteristic in calculate_result['characteristics']
-        # }
-
-        # # 5. Salvando o resultado
-
-        # calculated_characteristics = []
-        # repository = self.get_repository()
-
-        # for characteristic in qs:
-        #     value = calculated_values[characteristic.key]
-
-        #     calculated_characteristics.append(
-        #         CalculatedCharacteristic(
-        #             characteristic=characteristic,
-        #             value=value,
-        #             repository=repository,
-        #             created_at=created_at,
-        #         )
-        #     )
-
-        # CalculatedCharacteristic.objects.bulk_create(
-        #     calculated_characteristics
-        # )
-
-        # # 6. Retornando o resultado
-        # serializer = LatestCalculatedCharacteristicSerializer(
-        #     qs,
-        #     many=True,
-        #     context=self.get_serializer_context(),
-        # )
-
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #except CalculateModelException as exc:
+        #    return Response(
+        #        {'error': str(exc)},
+        #        status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        #    )
         return Response("serializer.data", status=status.HTTP_201_CREATED)

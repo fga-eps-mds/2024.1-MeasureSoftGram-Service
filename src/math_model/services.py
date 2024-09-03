@@ -1,76 +1,38 @@
+from characteristics.models import CalculatedCharacteristic, SupportedCharacteristic
 from rest_framework.generics import get_object_or_404
-from resources import calculate_measures
-from measures.models import CalculatedMeasure, SupportedMeasure
-from measures.serializers import (
-    CalculatedMeasureHistorySerializer,
-    LatestMeasuresCalculationsRequestSerializer,
-    MeasuresCalculationsRequestSerializer,
-    SupportedMeasureSerializer,
+from resources import (
+    calculate_measures, 
+    calculate_subcharacteristics, 
+    calculate_characteristics, 
+    calculate_tsqmi
 )
-from collectors.github import utils
-from collectors.github.serializers import GithubCollectorParamsSerializer
-from metrics.serializers import LatestCollectedMetricSerializer
+from measures.models import CalculatedMeasure, SupportedMeasure
 from organizations.models import Repository
 from metrics.models import CollectedMetric, SupportedMetric
-from measures.models import SupportedMeasure
-from metrics.serializers import CollectedMetricSerializer
-from subcharacteristics.models import SupportedSubCharacteristic
+from subcharacteristics.models import CalculatedSubCharacteristic, SupportedSubCharacteristic
+from tsqmi.models import TSQMI
+from tsqmi.serializers import TSQMISerializer
 from utils import namefy
-from rest_framework.response import Response
-
-from collectors.sonarqube.serializers import SonarQubeJSONSerializer
-from collectors.sonarqube.utils import import_sonar_metrics
-from metrics.models import SupportedMetric
-from organizations.models import Repository
-from organizations.models import Product
+from utils import utils
 from math_model.utils import parse_pre_config
     
     
 class MathModelServices():     
     def __init__(self, repository_id, product_id, organization_id): 
-        self.repository_id = repository_id
-        self.product_id = product_id
-        self.organization_id = organization_id
+        self.repository = utils.get_repository(organization_id, product_id, repository_id)
+        self.product = utils.get_product(organization_id, product_id)
 
-
-    def get_repository(self):
-        return get_object_or_404(
-            Repository,
-            id=self.repository_id,
-            product_id=self.product_id,
-            product__organization_id=self.organization_id,
-        )
-
-    def get_product(self):
-        return get_object_or_404(
-            Product,
-            id=self.product_id,
-            organization_id=self.organization_id,
-        )
-
-    def calculate_all(self, data, repository, config): 
-        # try: 
+    def calculate_all(self, data, config): 
         char_keys, subchar_keys, measure_keys, metric_keys = parse_pre_config(config)
-        
-        metrics = self.collect_metrics(data, repository)
-        measures = self.calculate_measures(
-            measure_keys
-        )
-        subcharacteristics = self.calculate_sucharacteristics(
-            measures
-        )
-        characteristics = self.calculcate_characterisctics(
-            subcharacteristics
-        )
-        #SO SALVAR QUANDO TUDO DER CERTO
-        saved_metrics = CollectedMetric.objects.bulk_create(metrics)
-            #CollectedMetricSerializer(saved_metrics, many=True).data
-        # except: 
-        #     return CollectionException
-        
+
+        metrics = self.collect_metrics(data)
+        measures = self.calculate_measures(measure_keys)
+        subcharacteristics = self.calculate_sucharacteristics(subchar_keys)
+        characteristics = self.calculcate_characterisctics(char_keys)
+        #saved_metrics = CollectedMetric.objects.bulk_create(metrics)
 
 
-    def collect_metrics(self, data, repository):
+    def collect_metrics(self, data):
 
         supported_metrics = {
             supported_metric.key: supported_metric
@@ -83,15 +45,13 @@ class MathModelServices():
             metric_key = metric["name"]
             metric_value = metric["value"]
 
-            if metric_key not in supported_metrics:
-                return
-
-            obj = {
-                # "path": metric["path"],
-                "metric": supported_metrics[metric_key],
-                "value": float(metric_value),
-                # "qualifier": "TRK",  # TODO FIND OUT WHAT SHOULD IT BE
-            }
+            collected_metrics.append(
+                CollectedMetric(
+                    metric=supported_metrics[metric_key],
+                    value=float(metric_value),
+                    repository=self.repository
+                )
+            )
 
             in_memory_metric = CollectedMetric(**obj)
             collected_metrics.append(in_memory_metric)
@@ -102,33 +62,19 @@ class MathModelServices():
                 metric_name = namefy(metric_key)
                 metric_value = obj['value']
 
-                if obj['metric'] not in supported_metrics:
-                    supported_metrics[metric_key] = SupportedMetric.objects.create(
-                        key=metric_key,
-                        metric_type=SupportedMetric.SupportedMetricTypes.FLOAT,
-                        name=metric_name,
+                collected_metrics.append(
+                    CollectedMetric(
+                        qualifier=component['qualifier'],
+                        path=component['path'], 
+                        metric=supported_metrics[metric_key],
+                        value=float(metric_value),
+                        repository=self.repository
                     )
-
-                obj = {
-                    'qualifier': component['qualifier'],
-                    'path': component['path'],
-                    'metric': supported_metrics[metric_key],
-                    'value': float(metric_value),
-                }
-
-                in_memory_metric = CollectedMetric(**obj)
-                collected_metrics.append(in_memory_metric)
-
-        for collected_metric in collected_metrics:
-            collected_metric.repository = repository
+                )
         
         return collected_metrics
 
-
-
     def calculate_measures(self, measure_keys): 
-        # created_at = data['created_at']
-
         # 2. Obtenção das medidas suportadas pelo serviço
         measure_keys = [measure['key'] for measure in measure_keys]
         qs = SupportedMeasure.objects.filter(
@@ -142,12 +88,9 @@ class MathModelServices():
         core_params = {'measures': []}
 
         # 4. Obtenção das métricas necessárias para calcular as medidas
-
-        repository = self.get_repository()
-
         measure: SupportedMeasure
         for measure in qs:
-            metric_params = measure.get_latest_metric_params(repository)
+            metric_params = measure.get_latest_metric_params(self.repository)
             print("params", metric_params)
 
             if metric_params:
@@ -164,8 +107,6 @@ class MathModelServices():
                     }
                 )
         # 5. Pega as configurações das thresholds
-        product = self.get_product()
-        pre_config = product.pre_configs.first()
 
         calculate_result = calculate_measures(core_params, pre_config.data)
 
@@ -188,20 +129,10 @@ class MathModelServices():
                 CalculatedMeasure(
                     measure=measure,
                     value=value,
-                    repository=repository
+                    repository=self.repository
                 )
             )
         return calculate_measures
-       # CalculatedMeasure.objects.bulk_create(calculated_measures)
-
-        # 7. Retornando o resultado
-        # serializer = LatestMeasuresCalculationsRequestSerializer(
-        #     qs,
-        #     many=True
-        #     context=self.get_serializer_context(),
-        # )
-
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def calculate_sucharacteristics(self, subcharacteristics_keys): 
         # 2. get queryset
@@ -213,23 +144,12 @@ class MathModelServices():
             'measures__calculated_measures',
         )
 
-        product = self.get_product()
-        pre_config = product.pre_configs.first()
-
         # 3. get core json response
         core_params = {'subcharacteristics': []}
         subchar: SupportedSubCharacteristic
 
         for subchar in qs:
-            try:
-                measure_params = subchar.get_latest_measure_params(pre_config)
-
-            except utils.exceptions.MeasureNotDefinedInPreConfiguration as exc:
-                return Response(
-                    {'error': str(exc)},
-                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                )
-
+            measure_params = subchar.get_latest_measure_params(pre_config)
             core_params['subcharacteristics'].append(
                 {
                     'key': subchar.key,
@@ -247,8 +167,6 @@ class MathModelServices():
 
         calculated_subcharacteristics = []
 
-        repository = self.get_repository()
-
         subchar: SupportedSubCharacteristic
         for subchar in qs:
             value = calculated_values[subchar.key]
@@ -257,15 +175,98 @@ class MathModelServices():
                 CalculatedSubCharacteristic(
                     subcharacteristic=subchar,
                     value=value,
-                    repository=repository,
-                    created_at=created_at,
+                    repository=self.repository,
+                    #created_at=created_at,
                 )
             )
 
-        CalculatedSubCharacteristic.objects.bulk_create(
-            calculated_subcharacteristics
+        return calculate_subcharacteristics
+
+    def calculcate_characterisctics(self, characteristics_keys): 
+        # 1. Get validated data
+        # 2. Get queryset
+        qs = SupportedCharacteristic.objects.filter(
+            key__in=characteristics_keys
+        ).prefetch_related(
+            'subcharacteristics',
+            'subcharacteristics__calculated_subcharacteristics',
         )
 
+        # 3. Create Core request
 
-    def calculcate_characterisctics(): 
-        pass
+        core_params = {'characteristics': []}
+
+        char: SupportedCharacteristic
+        for char in qs:
+            try:
+                subchars_params = char.get_latest_subcharacteristics_params(
+                    pre_config,
+                )
+
+            core_params['characteristics'].append(
+                {
+                    'key': char.key,
+                    'subcharacteristics': subchars_params,
+                }
+            )
+
+        calculate_result = calculate_characteristics(core_params)
+
+        calculated_values = {
+            characteristic['key']: characteristic['value']
+            for characteristic in calculate_result['characteristics']
+        }
+
+        # 5. Salvando o resultado
+
+        calculated_characteristics = []
+
+        for characteristic in qs:
+            value = calculated_values[characteristic.key]
+
+            calculated_characteristics.append(
+                CalculatedCharacteristic(
+                    characteristic=characteristic,
+                    value=value,
+                    repository=self.repository
+                )
+            )
+
+        return calculate_characteristics
+    
+    def calculate_tsqmi(self, char_keys, pre_config): 
+        characteristics_keys = [
+            characteristic['key']
+            for characteristic in pre_config.data['characteristics']
+        ]
+        qs = (
+            SupportedCharacteristic.objects.filter(
+                key__in=characteristics_keys
+            )
+            .prefetch_related('calculated_characteristics')
+            .first()
+        )
+
+        chars_params = []
+        chars_params = qs.get_latest_characteristics_params(
+            pre_config,
+        )
+
+        core_params = {
+            'tsqmi': {
+                'key': 'tsqmi',
+                'characteristics': chars_params,
+            }
+        }
+
+        calculate_result = calculate_tsqmi(core_params)
+
+        data = calculate_result.get('tsqmi')[0]
+
+        tsqmi = TSQMI.objects.create(
+            repository=self.repository,
+            value=data['value']
+        )
+
+        serializer = TSQMISerializer(tsqmi)
+        return serializer
