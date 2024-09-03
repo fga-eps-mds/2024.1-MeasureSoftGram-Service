@@ -27,7 +27,6 @@ def register_supported_entities_endpoints(router):
     router.register(
         'supported-characteristics', SupportedCharacteristicModelViewSet
     )
-
     router.register(
         'entity-relationship-tree',
         SupportedEntitiesRelationshipTreeViewSet,

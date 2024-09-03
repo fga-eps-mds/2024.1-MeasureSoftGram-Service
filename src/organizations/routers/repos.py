@@ -5,6 +5,7 @@ from characteristics.views import (
 )
 from collectors.github.view import ImportGithubMetricsViewSet
 from collectors.sonarqube.view import ImportSonarQubeMetricsViewSet
+from math_model.views import CalculateMathModelViewSet
 from measures.views import (
     CalculatedMeasureHistoryModelViewSet,
     CalculateMeasuresViewSet,
@@ -138,14 +139,19 @@ class RepoRouter(Router):
 
     def _get_collectors_endpoints_dict(self):
         return [
+            # {
+            #     'name': 'collectors/github',
+            #     'view': ImportGithubMetricsViewSet,
+            #     'basename': 'github-collector',
+            # },
+            # {
+            #     'name': 'collectors/sonarqube',
+            #     'view': ImportSonarQubeMetricsViewSet,
+            #     'basename': 'sonarqube-collector',
+            # },
             {
-                'name': 'collectors/github',
-                'view': ImportGithubMetricsViewSet,
-                'basename': 'github-collector',
-            },
-            {
-                'name': 'collectors/sonarqube',
-                'view': ImportSonarQubeMetricsViewSet,
-                'basename': 'sonarqube-collector',
-            },
+                'name': 'calculate/math-model', 
+                'view': CalculateMathModelViewSet, 
+                'basename': 'calculate-math-model'
+            }
         ]
