@@ -51,7 +51,7 @@ urlpatterns = [
                     UserListViewSet.as_view({'get': 'list'}),
                     name='user-list',
                 ),
-                 re_path(
+                re_path(
                     r'^user-repos/$',
                     UserRepos.as_view({'get': 'retrieve'}),
                     name='user-repos',

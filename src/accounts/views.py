@@ -113,6 +113,7 @@ class UserRepos(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet para os repositórios do github do user a partir de seu code
     """
+    permission_classes = (IsAuthenticated,)
 
     serializer_class = GitHubAccessTokenRetrieveSerializer
 
@@ -121,15 +122,14 @@ class UserRepos(viewsets.ReadOnlyModelViewSet):
 
         headers = {'Accept': 'application/json'}
 
-        urlToken = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}&client_secret={settings.GITHUB_SECRET}'
+        urlToken = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}\
+            &client_secret={settings.GITHUB_SECRET}'
         response = requests.get(urlToken, headers=headers)
 
         headersUser = {'Authorization': f'Bearer {response.json()["access_token"]}'}
 
-        urlUser = f'https://api.github.com/user'
+        urlUser = 'https://api.github.com/user'
         responseUser = requests.get(urlUser, headers=headersUser)
-
-
 
         urlRepos = f'https://api.github.com/search/repositories?q=user:{responseUser.json()["login"]}'
         responseRepos = requests.get(urlRepos)
