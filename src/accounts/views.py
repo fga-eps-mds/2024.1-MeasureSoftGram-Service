@@ -122,10 +122,9 @@ class UserRepos(viewsets.ReadOnlyModelViewSet):
 
         headers = {'Accept': 'application/json'}
 
-        urlToken = f'https://github.com/login/oauth/access_token?code={code}&client_id={settings.GITHUB_CLIENT_ID}\
-            &client_secret={settings.GITHUB_SECRET}'
-        response = requests.get(urlToken, headers=headers)
-
+        urlToken = f'https://github.com/login/oauth/access_token?code={code}'
+        urlTokenOtherPart = f'&client_id={settings.GITHUB_CLIENT_ID}&client_secret={settings.GITHUB_SECRET}'
+        response = requests.get(urlToken + urlTokenOtherPart, headers=headers)
         headersUser = {'Authorization': f'Bearer {response.json()["access_token"]}'}
 
         urlUser = 'https://api.github.com/user'
