@@ -3,8 +3,6 @@ from characteristics.views import (
     CalculatedCharacteristicHistoryModelViewSet,
     LatestCalculatedCharacteristicModelViewSet,
 )
-from collectors.github.view import ImportGithubMetricsViewSet
-from collectors.sonarqube.view import ImportSonarQubeMetricsViewSet
 from math_model.views import CalculateMathModelViewSet
 from measures.views import (
     CalculatedMeasureHistoryModelViewSet,

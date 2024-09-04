@@ -60,7 +60,7 @@ class CalculateSubCharacteristicViewSet(
         )
 
         product = self.get_product()
-        pre_config = product.pre_configs.first()
+        pre_config = product.release_configuration.first()
 
         # 3. get core json response
         core_params = {'subcharacteristics': []}
@@ -70,7 +70,7 @@ class CalculateSubCharacteristicViewSet(
             try:
                 measure_params = subchar.get_latest_measure_params(pre_config)
 
-            except utils.exceptions.MeasureNotDefinedInPreConfiguration as exc:
+            except utils.exceptions.MeasureNotDefinedInReleaseConfigurationuration as exc:
                 return Response(
                     {'error': str(exc)},
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY,

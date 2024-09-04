@@ -414,7 +414,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
     ):
         actions_urls = self.get_repository_urls('actions')
         url = actions_urls['calculate subcharacteristics']
-        pre_config = self.product.pre_configs.first()
+        pre_config = self.product.release_configuration.first()
         qs = pre_config.get_subcharacteristics_qs()
 
         for measure in SupportedMeasure.objects.all():
@@ -430,7 +430,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
     def test_if_calculate_characteristics_action_url_is_working(self, *a, **k):
         actions_urls = self.get_repository_urls('actions')
         url = actions_urls['calculate characteristics']
-        pre_config = self.product.pre_configs.first()
+        pre_config = self.product.release_configuration.first()
         qs = pre_config.get_characteristics_qs()
 
         for sub_char in SupportedSubCharacteristic.objects.all():
@@ -584,7 +584,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
     ):
         actions_urls = self.get_repository_urls('actions')
         url = actions_urls['calculate subcharacteristics']
-        pre_config = self.product.pre_configs.first()
+        pre_config = self.product.release_configuration.first()
         qs = pre_config.get_subcharacteristics_qs()
         keys = [{'key': subcharacteristic.key} for subcharacteristic in qs]
         now = dt.datetime.now(ZoneInfo('America/Sao_Paulo'))
@@ -618,7 +618,7 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
     ):
         actions_urls = self.get_repository_urls('actions')
         url = actions_urls['calculate characteristics']
-        pre_config = self.product.pre_configs.first()
+        pre_config = self.product.release_configuration.first()
         qs = pre_config.get_characteristics_qs()
         keys = [{'key': characteristic.key} for characteristic in qs]
         now = dt.datetime.now(ZoneInfo('America/Sao_Paulo'))

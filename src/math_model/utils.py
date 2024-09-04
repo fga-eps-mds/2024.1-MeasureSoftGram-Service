@@ -1,4 +1,4 @@
-def parse_pre_config(pre_config): 
+def parse_release_configuration(pre_config): 
     characteristics = []
     subcharacteristics = []
     measures = []

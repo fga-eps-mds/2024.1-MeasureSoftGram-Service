@@ -44,7 +44,7 @@ class SupportedCharacteristic(models.Model):
               - Desconfio que aqui esteja rolando vários inner joins
 
         raises:
-            utils.exceptions.CharacteristicNotDefinedInPreConfiguration:
+            utils.exceptions.CharacteristicNotDefinedInReleaseConfigurationuration:
                 Caso a uma características não esteja definida no pre_config
         """
         chars_params = []
@@ -74,7 +74,7 @@ class SupportedCharacteristic(models.Model):
               - Desconfio que aqui esteja rolando vários inner joins
 
         raises:
-            utils.exceptions.SubCharacteristicNotDefinedInPreConfiguration:
+            utils.exceptions.SubCharacteristicNotDefinedInReleaseConfigurationuration:
                 Caso a uma subcaracterísticas não esteja definida no pre_config
         """
         subchars_params = []

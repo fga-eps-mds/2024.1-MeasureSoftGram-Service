@@ -1,4 +1,4 @@
-from entity_trees.views import PreConfigEntitiesRelationshipTreeViewSet
+from entity_trees.views import ReleaseConfigurationEntitiesRelationshipTreeViewSet
 from goals.views import (
     CompareGoalsModelViewSet,
     CreateGoalModelViewSet,
@@ -11,9 +11,9 @@ from organizations.views import (
     RepositoriesTSQMILatestValueViewSet,
     RepositoryViewSet,
 )
-from pre_configs.views import (
-    CreatePreConfigModelViewSet,
-    CurrentPreConfigModelViewSet,
+from release_configuration.views import (
+    CreateReleaseConfigurationModelViewSet,
+    CurrentReleaseConfigurationModelViewSet,
 )
 from releases.views import CreateReleaseModelViewSet, ReleaseListAllModelViewSet
 
@@ -27,7 +27,7 @@ class ProductRouter(Router):
             children=[
                 {
                     'name': 'entity-relationship-tree',
-                    'view': PreConfigEntitiesRelationshipTreeViewSet,
+                    'view': ReleaseConfigurationEntitiesRelationshipTreeViewSet,
                     'basename': 'pre-config-entity-relationship-tree',
                 },
                 {
@@ -46,7 +46,7 @@ class ProductRouter(Router):
                     'basename': '',
                 },
                 *self._get_goals_endpoints_dicts(),
-                *self._get_preconfigs_endpoints_dict(),
+                *self._get_ReleaseConfigurations_endpoints_dict(),
                 *children,
             ],
         )
@@ -85,16 +85,16 @@ class ProductRouter(Router):
             },
         ]
 
-    def _get_preconfigs_endpoints_dict(self):
+    def _get_ReleaseConfigurations_endpoints_dict(self):
         return [
             {
                 'name': 'current/pre-config',
-                'view': CurrentPreConfigModelViewSet,
+                'view': CurrentReleaseConfigurationModelViewSet,
                 'basename': 'current-pre-config',
             },
             {
                 'name': 'create/pre-config',
-                'view': CreatePreConfigModelViewSet,
+                'view': CreateReleaseConfigurationModelViewSet,
                 'basename': 'create-pre-config',
             },
         ]

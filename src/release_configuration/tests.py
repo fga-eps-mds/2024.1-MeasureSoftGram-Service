@@ -3,7 +3,7 @@ from rest_framework.mixins import status
 from rest_framework.test import APIClient
 from rest_framework.viewsets import reverse
 
-from pre_configs.models import PreConfig
+from release_configuration.models import ReleaseConfiguration
 from utils.tests import APITestCaseExpanded
 
 # Create your tests here.
@@ -98,7 +98,7 @@ class TestConfigEnpoints(APITestCaseExpanded):
                     configs_resp.json().items(),
                 )
             ),
-            PreConfig.objects.values('id').filter(
+            ReleaseConfiguration.objects.values('id').filter(
                 id=configs_resp.json()['id']
             ),
         )

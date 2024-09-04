@@ -12,7 +12,7 @@ from tsqmi.serializers import (
     TSQMICalculationRequestSerializer,
     TSQMISerializer,
 )
-from utils.exceptions import CharacteristicNotDefinedInPreConfiguration
+from utils.exceptions import CharacteristicNotDefinedInReleaseConfigurationuration
 from django.http import HttpResponse
 
 
@@ -138,10 +138,10 @@ class CalculateTSQMI(
         created_at = serializer.validated_data['created_at']
 
         repository: Repository = self.get_repository()
-        pre_config = repository.product.pre_configs.first()
+        pre_config = repository.product.release_configuration.first()
 
         product = self.get_product()
-        pre_config = product.pre_configs.first()
+        pre_config = product.release_configuration.first()
 
         # 2. Get queryset
         # TODO: Gambiarra, modelar model para nível acima
@@ -162,7 +162,7 @@ class CalculateTSQMI(
             chars_params = qs.get_latest_characteristics_params(
                 pre_config,
             )
-        except CharacteristicNotDefinedInPreConfiguration as exc:
+        except CharacteristicNotDefinedInReleaseConfigurationuration as exc:
             return Response(
                 {'error': str(exc)},
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,

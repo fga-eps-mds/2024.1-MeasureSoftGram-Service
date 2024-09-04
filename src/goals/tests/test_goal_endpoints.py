@@ -9,7 +9,7 @@ from rest_framework.reverse import reverse
 
 from goals.models import Goal
 from organizations.management.commands.utils import (
-    create_a_preconfig,
+    create_a_ReleaseConfiguration,
     create_supported_characteristics,
 )
 from organizations.models import Product, Repository
@@ -49,7 +49,7 @@ class GoalEndpointsTestCase(APITestCaseExpanded):
         self.org = self.get_organization()
         self.product = self.get_product(self.org)
 
-        create_a_preconfig(
+        create_a_ReleaseConfiguration(
             characteristics_keys=characteristics_keys,
             product=self.product,
         )

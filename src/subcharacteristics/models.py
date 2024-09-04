@@ -56,7 +56,7 @@ class SupportedSubCharacteristic(models.Model):
               - Desconfio que aqui esteja rolando vários inner joins
 
         raises:
-            utils.exceptions.MeasureNotDefinedInPreConfiguration:
+            utils.exceptions.MeasureNotDefinedInReleaseConfigurationuration:
                 Caso a uma medida não esteja definida no pre_config
         """
         measures_params = []

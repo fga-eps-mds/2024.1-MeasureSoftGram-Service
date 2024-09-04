@@ -1,6 +1,7 @@
 # flake8: noqa
 # pylint: skip-file
 SONARQUBE_JSON = {
+    "sonarqube": {
     'paging': {'pageIndex': 1, 'pageSize': 500, 'total': 77},
     'baseComponent': {
         'id': 'AYH1Gki9YGgAeaDMB6HC',
@@ -1161,10 +1162,10 @@ SONARQUBE_JSON = {
         },
         {
             'id': 'AYIR2uf_sJU0gXq1umXx',
-            'key': 'fga-eps-mds_2022-1-MeasureSoftGram-CLI:tests/unit/data/measuresoftgramPreConfig.json',
-            'name': 'measuresoftgramPreConfig.json',
+            'key': 'fga-eps-mds_2022-1-MeasureSoftGram-CLI:tests/unit/data/measuresoftgramReleaseConfiguration.json',
+            'name': 'measuresoftgramReleaseConfiguration.json',
             'qualifier': 'UTS',
-            'path': 'tests/unit/data/measuresoftgramPreConfig.json',
+            'path': 'tests/unit/data/measuresoftgramReleaseConfiguration.json',
             'language': 'json',
             'measures': [
                 {
@@ -2764,4 +2765,5 @@ SONARQUBE_JSON = {
             ],
         },
     ],
+}
 }

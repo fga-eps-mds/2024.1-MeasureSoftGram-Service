@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from characteristics.models import (
     BalanceMatrix,
     CalculatedCharacteristic,
-    SupportedCharacteristic,
+    SupportedCharacteristic,    
 )
 from characteristics.serializers import (
     BalanceMatrixSerializer,
@@ -16,8 +16,8 @@ from characteristics.serializers import (
     SupportedCharacteristicSerializer,
 )
 from organizations.models import Product, Repository
-from pre_configs.models import PreConfig
-from utils.exceptions import SubCharacteristicNotDefinedInPreConfiguration
+from release_configuration.models import ReleaseConfiguration
+from utils.exceptions import SubCharacteristicNotDefinedInReleaseConfigurationuration
 
 
 class CalculateCharacteristicViewSet(
@@ -65,7 +65,7 @@ class CalculateCharacteristicViewSet(
 
         # 3. Create Core request
         product = self.get_product()
-        pre_config = product.pre_configs.first()
+        pre_config = product.release_configuration.first()
 
         core_params = {'characteristics': []}
 
@@ -76,7 +76,7 @@ class CalculateCharacteristicViewSet(
                     pre_config,
                 )
 
-            except SubCharacteristicNotDefinedInPreConfiguration as exc:
+            except SubCharacteristicNotDefinedInReleaseConfigurationuration as exc:
                 return Response(
                     {'error': str(exc)},
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY,

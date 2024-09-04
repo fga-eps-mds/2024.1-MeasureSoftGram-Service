@@ -3,18 +3,18 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from organizations.models import Product
-from pre_configs.models import PreConfig
+from release_configuration.models import ReleaseConfiguration
 from measures.models import SupportedMeasure
-from pre_configs.serializers import PreConfigSerializer
+from release_configuration.serializers import ReleaseConfigurationSerializer
 from staticfiles import SUPPORTED_MEASURES
 
 
-class CurrentPreConfigModelViewSet(
+class CurrentReleaseConfigurationModelViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = PreConfig.objects.all()
-    serializer_class = PreConfigSerializer
+    queryset = ReleaseConfiguration.objects.all()
+    serializer_class = ReleaseConfigurationSerializer
 
     def get_product(self):
         return get_object_or_404(
@@ -25,17 +25,17 @@ class CurrentPreConfigModelViewSet(
     def list(self, request, *args, **kwargs):
         # first() == mais recente == pre configuração atual
         product = self.get_product()
-        latest_pre_config = product.pre_configs.first()
-        serializer = PreConfigSerializer(latest_pre_config)
+        latest_pre_config = product.release_configuration.first()
+        serializer = ReleaseConfigurationSerializer(latest_pre_config)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class CreatePreConfigModelViewSet(
+class CreateReleaseConfigurationModelViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    serializer_class = PreConfigSerializer
-    queryset = PreConfig.objects.all()
+    serializer_class = ReleaseConfigurationSerializer
+    queryset = ReleaseConfiguration.objects.all()
 
     def get_product(self):
         return get_object_or_404(
@@ -71,8 +71,8 @@ class CreatePreConfigModelViewSet(
         serializer = self.get_serializer(data=data_to_add_metrics)
         serializer.is_valid(raise_exception=True)
         product = self.get_product()
-        current_preconfig = product.pre_configs.first()
-        if data_to_add_metrics == current_preconfig.data:
+        current_ReleaseConfiguration = product.release_configuration.first()
+        if data_to_add_metrics == current_ReleaseConfiguration.data:
             return Response(data_to_add_metrics, status=status.HTTP_200_OK)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)

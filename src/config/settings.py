@@ -85,10 +85,10 @@ APPLICATION_APPS = [
     "subcharacteristics",
     "characteristics",
     "tsqmi",
-    "pre_configs",
+    "release_configuration",
     "goals",
     "entity_trees",
-    "collectors",
+    "math_model",
     "utils",
     "releases",
 ]

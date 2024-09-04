@@ -3,7 +3,7 @@ from rest_framework import serializers
 from characteristics.models import SupportedCharacteristic
 from characteristics.serializers import SupportedCharacteristicSerializer
 from measures.serializers import SupportedMeasureSerializer
-from pre_configs.models import PreConfig
+from release_configuration.models import ReleaseConfiguration
 from subcharacteristics.serializers import SupportedSubCharacteristicSerializer
 
 

@@ -20,18 +20,19 @@ from characteristics.models import (
     CalculatedCharacteristic,
     SupportedCharacteristic,
 )
-from collectors.sonarqube.utils import import_sonar_metrics
+from math_model.services import MathModelServices
 from goals.serializers import GoalSerializer
 from measures.models import CalculatedMeasure, SupportedMeasure
 from metrics.models import CollectedMetric, SupportedMetric
 from organizations.models import Organization, Product, Repository
-from pre_configs.models import PreConfig
+from release_configuration.models import ReleaseConfiguration
 from staticfiles import SUPPORTED_MEASURES
 from subcharacteristics.models import (
     CalculatedSubCharacteristic,
     SupportedSubCharacteristic,
 )
 from tsqmi.models import TSQMI
+from utils import namefy
 
 # Local Imports
 from utils import (
@@ -124,7 +125,7 @@ class Command(BaseCommand):
                 metrics = SupportedMetric.objects.filter(
                     key__in=metrics_keys,
                 )
-
+            
                 if metrics.count() != len(metrics_keys):
                     raise exceptions.MissingSupportedMetricException()
 
@@ -142,7 +143,7 @@ class Command(BaseCommand):
 
     def create_sonarqube_supported_metrics(self):
         sonar_endpoint = 'https://sonarcloud.io/api/metrics/search'
-
+        data = []
         try:
             request = requests.get(sonar_endpoint)
 
@@ -153,13 +154,35 @@ class Command(BaseCommand):
         except Exception:
             data = staticfiles.SONARQUBE_AVAILABLE_METRICS
 
-        self.model_generator(SupportedMetric, data['metrics'])
+        sonar_metrics = [
+            SupportedMetric(
+                key=metric['key'],
+                name=metric['name']
+            )
+            for metric in data["metrics"]
+        ]
+        for metric in sonar_metrics:
+            with contextlib.suppress(IntegrityError):
+                metric.save()
 
-        import_sonar_metrics(
-            staticfiles.SONARQUBE_JSON,
-            None,
-            only_create_supported_metrics=True,
-        )
+        supported_metrics = {
+            supported_metric.key: supported_metric
+            for supported_metric in SupportedMetric.objects.all()
+        }
+
+        for component in staticfiles.SONARQUBE_JSON["sonarqube"]['components']:
+            for obj in component['measures']:
+                metric_key = obj['metric']
+                metric_name = namefy(metric_key)
+                metric_value = obj['value']
+
+                if obj['metric'] not in supported_metrics:
+                    supported_metrics[metric_key] = SupportedMetric.objects.create(
+                        key=metric_key,
+                        metric_type=SupportedMetric.SupportedMetricTypes.FLOAT,
+                        name=metric_name,
+                    )
+
 
     def create_github_supported_metrics(self):
         github_metrics = [
@@ -409,14 +432,14 @@ class Command(BaseCommand):
         )
 
     def create_default_pre_config(self, product):
-        PreConfig.objects.get_or_create(
+        ReleaseConfiguration.objects.get_or_create(
             name='Default pre-config',
             data=staticfiles.DEFAULT_PRE_CONFIG,
             product=product,
         )
 
     def create_a_goal(self, product: Product):
-        pre_config = product.pre_configs.first()
+        pre_config = product.release_configuration.first()
         data = get_random_goal_data(pre_config)
         serializer = GoalSerializer(data=data)
 
