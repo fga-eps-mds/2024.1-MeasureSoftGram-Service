@@ -5,11 +5,11 @@ def parse_pre_config(pre_config):
     metrics = []
 
     for characteristic in pre_config["data"]["characteristics"]: 
-        characteristics.append({"key": characteristic["key"]})
+        characteristics.append(characteristic["key"])
         for subcharacteristic in characteristic["subcharacteristics"]: 
-            subcharacteristics.append({"key": subcharacteristic["key"]})
+            subcharacteristics.append(subcharacteristic["key"])
             for measure in subcharacteristic["measures"]: 
-                measures.append({"key": measure["key"]})
+                measures.append(measure["key"])
                 metrics+=measure["metrics"]
 
 

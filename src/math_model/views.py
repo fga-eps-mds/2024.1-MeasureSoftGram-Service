@@ -6,7 +6,7 @@ from subcharacteristics.models import SupportedSubCharacteristic
 from characteristics.models import SupportedCharacteristic
 from math_model.services import MathModelServices
 from rest_framework.response import Response
-from pre_configs.serializers import PreConfigSerializer
+
 
 class CalculateMathModelViewSet(
     mixins.CreateModelMixin,
@@ -25,13 +25,8 @@ class CalculateMathModelViewSet(
         organization_id=self.kwargs['organization_pk']
 
         services = MathModelServices(repository_id, product_id, organization_id)
-        product = services.get_product()
-        config = product.pre_configs.first()
-        serializer = PreConfigSerializer(config)
-        repository = services.get_repository()
-        print(serializer.data)
         #try:  
-        services.calculate_all(request.data, repository, serializer.data)
+        services.calculate_all(request.data)
         #except CalculateModelException as exc:
         #    return Response(
         #        {'error': str(exc)},

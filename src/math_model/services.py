@@ -15,21 +15,26 @@ from tsqmi.serializers import TSQMISerializer
 from utils import namefy
 from utils import utils
 from math_model.utils import parse_pre_config
-    
+from pre_configs.serializers import PreConfigSerializer
     
 class MathModelServices():     
     def __init__(self, repository_id, product_id, organization_id): 
         self.repository = utils.get_repository(organization_id, product_id, repository_id)
         self.product = utils.get_product(organization_id, product_id)
 
-    def calculate_all(self, data, config): 
-        char_keys, subchar_keys, measure_keys, metric_keys = parse_pre_config(config)
+    def calculate_all(self, data): 
+        config = self.product.pre_configs.first()
+        serializer = PreConfigSerializer(config)
+        char_keys, subchar_keys, measure_keys, metric_keys = parse_pre_config(serializer.data)
 
         metrics = self.collect_metrics(data)
-        measures = self.calculate_measures(measure_keys)
-        subcharacteristics = self.calculate_sucharacteristics(subchar_keys)
-        characteristics = self.calculcate_characterisctics(char_keys)
-        #saved_metrics = CollectedMetric.objects.bulk_create(metrics)
+        measures = self.calculate_measures(measure_keys, config)
+
+        subcharacteristics = self.calculate_sucharacteristics(subchar_keys, config)
+        characteristics = self.calculcate_characterisctics(char_keys, config)
+        saved_metrics = CollectedMetric.objects.bulk_create(metrics)
+        saved_measures = CalculatedMeasure.objects.bulk_create(measures)
+        saved_subchar = CalculatedSubCharacteristic.objects.bulk_create(subcharacteristics)
 
 
     def collect_metrics(self, data):
@@ -49,12 +54,10 @@ class MathModelServices():
                 CollectedMetric(
                     metric=supported_metrics[metric_key],
                     value=float(metric_value),
-                    repository=self.repository
+                    repository=self.repository, 
+                    qualifier="TRK"
                 )
             )
-
-            in_memory_metric = CollectedMetric(**obj)
-            collected_metrics.append(in_memory_metric)
 
         for component in data["sonarqube"]['components']:
             for obj in component['measures']:
@@ -74,9 +77,7 @@ class MathModelServices():
         
         return collected_metrics
 
-    def calculate_measures(self, measure_keys): 
-        # 2. Obtenção das medidas suportadas pelo serviço
-        measure_keys = [measure['key'] for measure in measure_keys]
+    def calculate_measures(self, measure_keys, pre_config): 
         qs = SupportedMeasure.objects.filter(
             key__in=measure_keys
         ).prefetch_related(
@@ -84,15 +85,11 @@ class MathModelServices():
             'metrics__collected_metrics',
         )
 
-        # 3. Criação do dicionário que será enviado para o serviço `core`
         core_params = {'measures': []}
 
-        # 4. Obtenção das métricas necessárias para calcular as medidas
         measure: SupportedMeasure
         for measure in qs:
             metric_params = measure.get_latest_metric_params(self.repository)
-            print("params", metric_params)
-
             if metric_params:
                 core_params['measures'].append(
                     {
@@ -106,15 +103,12 @@ class MathModelServices():
                         ]
                     }
                 )
-        # 5. Pega as configurações das thresholds
-
         calculate_result = calculate_measures(core_params, pre_config.data)
 
         calculated_values = {
             measure['key']: measure['value']
             for measure in calculate_result['measures']
         }
-        # 6. Salvando no banco de dados as medidas calculadas
 
         calculated_measures = []
 
@@ -132,11 +126,9 @@ class MathModelServices():
                     repository=self.repository
                 )
             )
-        return calculate_measures
+        return calculated_measures
 
-    def calculate_sucharacteristics(self, subcharacteristics_keys): 
-        # 2. get queryset
-        
+    def calculate_sucharacteristics(self, subcharacteristics_keys, pre_config): 
         qs = SupportedSubCharacteristic.objects.filter(
             key__in=subcharacteristics_keys
         ).prefetch_related(
@@ -180,11 +172,9 @@ class MathModelServices():
                 )
             )
 
-        return calculate_subcharacteristics
+        return calculated_subcharacteristics
 
-    def calculcate_characterisctics(self, characteristics_keys): 
-        # 1. Get validated data
-        # 2. Get queryset
+    def calculcate_characterisctics(self, characteristics_keys, pre_config): 
         qs = SupportedCharacteristic.objects.filter(
             key__in=characteristics_keys
         ).prefetch_related(
@@ -192,16 +182,13 @@ class MathModelServices():
             'subcharacteristics__calculated_subcharacteristics',
         )
 
-        # 3. Create Core request
-
         core_params = {'characteristics': []}
 
         char: SupportedCharacteristic
         for char in qs:
-            try:
-                subchars_params = char.get_latest_subcharacteristics_params(
-                    pre_config,
-                )
+            subchars_params = char.get_latest_subcharacteristics_params(
+                pre_config,
+            )
 
             core_params['characteristics'].append(
                 {
@@ -217,8 +204,6 @@ class MathModelServices():
             for characteristic in calculate_result['characteristics']
         }
 
-        # 5. Salvando o resultado
-
         calculated_characteristics = []
 
         for characteristic in qs:
@@ -232,7 +217,7 @@ class MathModelServices():
                 )
             )
 
-        return calculate_characteristics
+        return calculated_characteristics
     
     def calculate_tsqmi(self, char_keys, pre_config): 
         characteristics_keys = [
