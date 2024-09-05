@@ -43,7 +43,7 @@ class ReleaseConfiguration(models.Model):
         está sendo criada ou editada é ou não válida
         """
         if self.id:
-            raise ValueError("It's not allowed to edit a pre-configuration")
+            raise ValueError("It's not allowed to edit a release-configuration")
 
         self.validate_measures(self.data)
         self.validate_measures_weights(self.data)
@@ -229,7 +229,7 @@ class ReleaseConfiguration(models.Model):
 
                     raise InvalidReleaseConfigurationException(
                         (
-                            'Failed to save pre-config. It is not allowed to '
+                            'Failed to save release-config. It is not allowed to '
                             f'associate the measures [{invalid_measures}] with the '
                             f'subcharacteristic {subchar.key}'
                         )
@@ -308,7 +308,7 @@ class ReleaseConfiguration(models.Model):
 
                 raise InvalidReleaseConfigurationException(
                     (
-                        'Failed to save pre-config. It is not allowed to '
+                        'Failed to save release-config. It is not allowed to '
                         f'associate the subcharacteristics [{invalid_subs}] '
                         f'with the characteristic {charact.key}'
                     )

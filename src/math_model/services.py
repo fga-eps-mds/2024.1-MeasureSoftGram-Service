@@ -61,12 +61,6 @@ class MathModelServices():
                     metric_key = obj['metric']
                     metric_name = namefy(metric_key)
                     metric_value = obj['value']
-                    # if obj['metric'] not in supported_metrics:
-                    #     supported_metrics[metric_key] = SupportedMetric.objects.create(
-                    #         key=metric_key,
-                    #         metric_type=SupportedMetric.SupportedMetricTypes.FLOAT,
-                    #         name=metric_name,
-                    #     )
 
                     collected_metrics.append(
                         CollectedMetric(
@@ -78,7 +72,7 @@ class MathModelServices():
                         )
                     )
             
-        saved_metrics = CollectedMetric.objects.bulk_create(metrics)
+        saved_metrics = CollectedMetric.objects.bulk_create(collected_metrics)
         return saved_metrics
 
     def calculate_measures(self, measure_keys, release_configuration): 
@@ -130,8 +124,8 @@ class MathModelServices():
                     repository=self.repository
                 )
             )
-        saved_measures = CalculatedMeasure.objects.bulk_create(measures)
-        return calculated_measures
+        saved_measures = CalculatedMeasure.objects.bulk_create(calculated_measures)
+        return saved_measures
 
     def calculate_sucharacteristics(self, subcharacteristics_keys, release_configuration): 
         qs = SupportedSubCharacteristic.objects.filter(
@@ -176,7 +170,7 @@ class MathModelServices():
                 )
             )
 
-        saved_subchar = CalculatedSubCharacteristic.objects.bulk_create(subcharacteristics)
+        saved_subchar = CalculatedSubCharacteristic.objects.bulk_create(calculated_subcharacteristics)
         return saved_subchar
 
     def calculcate_characterisctics(self, characteristics_keys, release_configuration): 
@@ -221,7 +215,7 @@ class MathModelServices():
                     repository=self.repository
                 )
             )
-
+        saved_char = CalculatedCharacteristic.objects.bulk_create(calculated_characteristics)
         return calculated_characteristics
     
     def calculate_tsqmi(self, char_keys, release_configuration): 
@@ -257,6 +251,8 @@ class MathModelServices():
             repository=self.repository,
             value=data['value']
         )
+        print(tsqmi.__dict__)
 
         serializer = TSQMISerializer(tsqmi)
+        print(serializer)
         return serializer

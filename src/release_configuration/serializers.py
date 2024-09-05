@@ -25,7 +25,7 @@ class ReleaseConfigurationSerializer(serializers.ModelSerializer):
         Valida se a pré-configuração que está sendo criada é válida
         """
         if self.instance:
-            raise ValueError("It's not allowed to edit a pre-configuration")
+            raise ValueError("It's not allowed to edit a release-configuration")
 
         data = attrs['data']
 

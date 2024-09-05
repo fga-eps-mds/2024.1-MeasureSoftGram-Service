@@ -131,7 +131,7 @@ class GoalSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 (
                     'It is not allowed to create goals with characteristics '
-                    'that were not selected in the pre-configuration.'
+                    'that were not selected in the release-configuration.'
                 )
             )
 

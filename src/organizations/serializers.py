@@ -201,16 +201,16 @@ class ProductSerializer(serializers.ModelSerializer):
         )
 
         current_pre_config_url = self.reverse_product_resource(
-            obj, 'current-pre-config-list'
+            obj, 'current-release-config-list'
         )
 
         create_a_pre_config_url = self.reverse_product_resource(
-            obj, 'create-pre-config-list'
+            obj, 'create-release-config-list'
         )
 
         pre_config_entity_relationship_tree_url = (
             self.reverse_product_resource(
-                obj, 'pre-config-entity-relationship-tree-list'
+                obj, 'release-config-entity-relationship-tree-list'
             )
         )
 
@@ -230,12 +230,12 @@ class ProductSerializer(serializers.ModelSerializer):
             'create a new repository': create_a_new_repository_url,
             'get current goal': current_goal_url,
             'get compare all goals': compare_goals_url,
-            'get current pre-config': current_pre_config_url,
-            'get pre-config entity relationship tree': pre_config_entity_relationship_tree_url,
+            'get current pre-release_config': current_pre_config_url,
+            'get release-config entity relationship tree': pre_config_entity_relationship_tree_url,
             'get all repositories latest tsqmis': repositories_latest_tsqmis_url,
             'get all repositories tsqmi historical values': repositories_tsqmi_historical_values_url,
             'create a new goal': create_a_new_goal_url,
-            'create a new pre-config': create_a_pre_config_url,
+            'create a new release-config': create_a_pre_config_url,
         }
 
 
@@ -369,24 +369,12 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
             'calculate-tsqmi-list',
         )
 
-        github_collector_url = self.reverse_repository_resource(
-            obj,
-            'github-collector-list',
-        )
-
-        sonarqube_collector_url = self.reverse_repository_resource(
-            obj,
-            'sonarqube-collector-list',
-        )
-
         return {
             'collect metric': collect_metric_url,
             'calculate measures': calculate_measures_url,
             'calculate subcharacteristics': calculate_subcharacteristics_url,
             'calculate characteristics': calculate_characteristics_url,
             'calculate tsqmi': calculate_tsqmi_url,
-            'import metrics from github': github_collector_url,
-            'import metrics from SonarQube JSON': sonarqube_collector_url,
         }
 
     def get_historical_values(self, obj: Repository):

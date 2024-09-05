@@ -412,12 +412,12 @@
 							"name": "Ações",
 							"item": [
 								{
-									"name": "Current Pré-config",
+									"name": "Current Release config",
 									"request": {
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{MSG_SERVICE_HOST}}/api/v1/organizations/4/products/5/current/pre-config/",
+											"raw": "{{MSG_SERVICE_HOST}}/api/v1/organizations/4/products/5/current/release-config/",
 											"host": [
 												"{{MSG_SERVICE_HOST}}"
 											],
@@ -429,7 +429,7 @@
 												"products",
 												"5",
 												"current",
-												"pre-config",
+												"release-config",
 												""
 											]
 										}
@@ -443,7 +443,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"name\": \"Nova pre-config da release V5.1.0\",\n    \"data\": {\n        \"characteristics\": [\n            {\n                \"key\": \"reliability\",\n                \"weight\": 60,\n                \"subcharacteristics\": [\n                    {\n                        \"key\": \"testing_status\",\n                        \"weight\": 100,\n                        \"measures\": [\n                            {\n                                \"key\": \"passed_tests\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"test_builds\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"test_coverage\",\n                                \"weight\": 34\n                            }\n                        ]\n                    }\n                ]\n            },\n            {\n                \"key\": \"maintainability\",\n                \"weight\": 40,\n                \"subcharacteristics\": [\n                    {\n                        \"key\": \"modifiability\",\n                        \"weight\": 100,\n                        \"measures\": [\n                            {\n                                \"key\": \"non_complex_file_density\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"commented_file_density\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"duplication_absense\",\n                                \"weight\": 34\n                            }\n                        ]\n                    }\n                ]\n            }\n        ]\n    }\n}",
+											"raw": "{\n    \"name\": \"Nova release-config da release V5.1.0\",\n    \"data\": {\n        \"characteristics\": [\n            {\n                \"key\": \"reliability\",\n                \"weight\": 60,\n                \"subcharacteristics\": [\n                    {\n                        \"key\": \"testing_status\",\n                        \"weight\": 100,\n                        \"measures\": [\n                            {\n                                \"key\": \"passed_tests\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"test_builds\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"test_coverage\",\n                                \"weight\": 34\n                            }\n                        ]\n                    }\n                ]\n            },\n            {\n                \"key\": \"maintainability\",\n                \"weight\": 40,\n                \"subcharacteristics\": [\n                    {\n                        \"key\": \"modifiability\",\n                        \"weight\": 100,\n                        \"measures\": [\n                            {\n                                \"key\": \"non_complex_file_density\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"commented_file_density\",\n                                \"weight\": 33\n                            },\n                            {\n                                \"key\": \"duplication_absense\",\n                                \"weight\": 34\n                            }\n                        ]\n                    }\n                ]\n            }\n        ]\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -451,7 +451,7 @@
 											}
 										},
 										"url": {
-											"raw": "{{MSG_SERVICE_HOST}}/api/v1/organizations/4/products/5/create/pre-config/",
+											"raw": "{{MSG_SERVICE_HOST}}/api/v1/organizations/4/products/5/create/release-config/",
 											"host": [
 												"{{MSG_SERVICE_HOST}}"
 											],
@@ -463,7 +463,7 @@
 												"products",
 												"5",
 												"create",
-												"pre-config",
+												"release-config",
 												""
 											]
 										}

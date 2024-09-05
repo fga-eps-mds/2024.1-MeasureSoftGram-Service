@@ -71,8 +71,8 @@ class CreateReleaseConfigurationModelViewSet(
         serializer = self.get_serializer(data=data_to_add_metrics)
         serializer.is_valid(raise_exception=True)
         product = self.get_product()
-        current_ReleaseConfiguration = product.release_configuration.first()
-        if data_to_add_metrics == current_ReleaseConfiguration.data:
+        current_release_configuration = product.release_configuration.first()
+        if data_to_add_metrics == current_release_configuration.data:
             return Response(data_to_add_metrics, status=status.HTTP_200_OK)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)

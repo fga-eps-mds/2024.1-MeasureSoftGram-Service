@@ -28,7 +28,7 @@ class ProductRouter(Router):
                 {
                     'name': 'entity-relationship-tree',
                     'view': ReleaseConfigurationEntitiesRelationshipTreeViewSet,
-                    'basename': 'pre-config-entity-relationship-tree',
+                    'basename': 'release-config-entity-relationship-tree',
                 },
                 {
                     'name': 'repositories-tsqmi-latest-values',
@@ -88,13 +88,13 @@ class ProductRouter(Router):
     def _get_ReleaseConfigurations_endpoints_dict(self):
         return [
             {
-                'name': 'current/pre-config',
+                'name': 'current/release-config',
                 'view': CurrentReleaseConfigurationModelViewSet,
-                'basename': 'current-pre-config',
+                'basename': 'current-release-config',
             },
             {
-                'name': 'create/pre-config',
+                'name': 'create/release-config',
                 'view': CreateReleaseConfigurationModelViewSet,
-                'basename': 'create-pre-config',
+                'basename': 'create-release-config',
             },
         ]

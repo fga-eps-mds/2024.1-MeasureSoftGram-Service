@@ -45,7 +45,7 @@ class TestConfigEnpoints(APITestCaseExpanded):
         self.assertIsNotNone(pre_config_uri)
 
         configs_resp = self.request.get(
-            pre_config_uri['get current pre-config']
+            pre_config_uri['get current release-config']
         )
 
         self.assertEqual(configs_resp.status_code, status.HTTP_200_OK)
@@ -77,17 +77,17 @@ class TestConfigEnpoints(APITestCaseExpanded):
         ]
 
         data = {
-            'name': 'Test Pre-Config',
+            'name': 'Test release-config',
             'data': {'characteristics': characteristics},
         }
         response = self.request.post(
-            pre_config_uri['create a new pre-config'], data, format='json'
+            pre_config_uri['create a new release-config'], data, format='json'
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         configs_resp = self.request.get(
-            pre_config_uri['get current pre-config']
+            pre_config_uri['get current release-config']
         )
         print(configs_resp.json())
 

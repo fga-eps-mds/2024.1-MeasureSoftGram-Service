@@ -27,4 +27,4 @@ class CalculateMathModelViewSet(
                 {'error': str(exc)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response(response, status=status.HTTP_201_CREATED)
+        return Response(response.data, status=status.HTTP_201_CREATED)

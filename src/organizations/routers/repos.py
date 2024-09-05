@@ -137,16 +137,6 @@ class RepoRouter(Router):
 
     def _get_collectors_endpoints_dict(self):
         return [
-            # {
-            #     'name': 'collectors/github',
-            #     'view': ImportGithubMetricsViewSet,
-            #     'basename': 'github-collector',
-            # },
-            # {
-            #     'name': 'collectors/sonarqube',
-            #     'view': ImportSonarQubeMetricsViewSet,
-            #     'basename': 'sonarqube-collector',
-            # },
             {
                 'name': 'calculate/math-model', 
                 'view': CalculateMathModelViewSet, 

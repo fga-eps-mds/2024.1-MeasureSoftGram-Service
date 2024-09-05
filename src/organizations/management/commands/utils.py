@@ -135,7 +135,7 @@ def create_a_ReleaseConfiguration(characteristics_keys, product):
     ReleaseConfiguration = {'characteristics': data}
 
     ReleaseConfiguration = ReleaseConfiguration.objects.create(
-        name='custom pre-config',
+        name='custom release-config',
         data=ReleaseConfiguration,
         product=product,
     )
