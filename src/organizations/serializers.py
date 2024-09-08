@@ -200,7 +200,7 @@ class ProductSerializer(serializers.ModelSerializer):
             obj, 'create-goal-list'
         )
 
-        current_pre_config_url = self.reverse_product_resource(
+        current_release_config_url = self.reverse_product_resource(
             obj, 'current-release-config-list'
         )
 
@@ -230,7 +230,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'create a new repository': create_a_new_repository_url,
             'get current goal': current_goal_url,
             'get compare all goals': compare_goals_url,
-            'get current pre-release_config': current_pre_config_url,
+            'get current release-config': current_release_config_url,
             'get release-config entity relationship tree': pre_config_entity_relationship_tree_url,
             'get all repositories latest tsqmis': repositories_latest_tsqmis_url,
             'get all repositories tsqmi historical values': repositories_tsqmi_historical_values_url,
@@ -341,40 +341,15 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
             request=self.context['request'],
         )
 
-    def get_actions(self, obj):
-        """
-        Lista todas as ações que podem ser feitas no repositório
-        """
-        collect_metric_url = self.reverse_repository_resource(
-            obj, 'collectedmetric-list'
-        )
+    def get_actions(self, obj): 
+        # Lista todas as ações que podem ser feitas no repositório
 
-        calculate_measures_url = self.reverse_repository_resource(
-            obj,
-            'calculate-measures-list',
-        )
-
-        calculate_subcharacteristics_url = self.reverse_repository_resource(
-            obj,
-            'calculate-subcharacteristics-list',
-        )
-
-        calculate_characteristics_url = self.reverse_repository_resource(
-            obj,
-            'calculate-characteristics-list',
-        )
-
-        calculate_tsqmi_url = self.reverse_repository_resource(
-            obj,
-            'calculate-tsqmi-list',
+        calculate_math_model_url = self.reverse_repository_resource(
+            obj, 'math-model-list'
         )
 
         return {
-            'collect metric': collect_metric_url,
-            'calculate measures': calculate_measures_url,
-            'calculate subcharacteristics': calculate_subcharacteristics_url,
-            'calculate characteristics': calculate_characteristics_url,
-            'calculate tsqmi': calculate_tsqmi_url,
+            'collect math model': calculate_math_model_url,
         }
 
     def get_historical_values(self, obj: Repository):

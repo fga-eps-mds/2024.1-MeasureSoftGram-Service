@@ -29,9 +29,9 @@ def create_supported_characteristics(suported_characteristics):
             subcharacteristics = SupportedSubCharacteristic.objects.filter(
                 key__in=subcharacteristics_keys,
             )
-
-            # if subcharacteristics.count() != len(subcharacteristics_keys):
-            #     raise exceptions.MissingSupportedSubCharacteristicError()
+ 
+            if subcharacteristics.count() != len(subcharacteristics_keys):
+                raise exceptions.MissingSupportedSubCharacteristicError()
 
             charact.subcharacteristics.set(subcharacteristics)
 

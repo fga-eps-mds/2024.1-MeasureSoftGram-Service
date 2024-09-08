@@ -27,5 +27,3 @@ class MetricsSerializer(serializers.Serializer):
     organization_id: serializers.IntegerField()
     sonarqube: SonarQubeJSONSerializer()
     github: serializers.DictField()
-    
-

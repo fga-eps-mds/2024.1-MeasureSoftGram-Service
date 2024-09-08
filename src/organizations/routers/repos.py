@@ -11,13 +11,11 @@ from measures.views import (
 )
 from metrics.views import (
     CollectedMetricHistoryModelViewSet,
-    CollectedMetricModelViewSet,
     LatestCollectedMetricModelViewSet,
 )
 from organizations.routers.routers import Router
 from subcharacteristics.views import (
     CalculatedSubCharacteristicHistoryModelViewSet,
-    CalculateSubCharacteristicViewSet,
     LatestCalculatedSubCharacteristicModelViewSet,
 )
 from tsqmi.views import (
@@ -38,7 +36,6 @@ class RepoRouter(Router):
                 *self._get_actions_endpoints_dicts(),
                 *self._get_latest_values_endpoints_dict(),
                 *self._get_historic_values_endpoints_dicts(),
-                *self._get_collectors_endpoints_dict(),
                 *children,
             ],
         )
@@ -46,29 +43,9 @@ class RepoRouter(Router):
     def _get_actions_endpoints_dicts(self):
         return [
             {
-                'name': 'collect/metrics',
-                'view': CollectedMetricModelViewSet,
-                'basename': '',
-            },
-            {
-                'name': 'calculate/measures',
-                'view': CalculateMeasuresViewSet,
-                'basename': 'calculate-measures',
-            },
-            {
-                'name': 'calculate/subcharacteristics',
-                'view': CalculateSubCharacteristicViewSet,
-                'basename': 'calculate-subcharacteristics',
-            },
-            {
-                'name': 'calculate/characteristics',
-                'view': CalculateCharacteristicViewSet,
-                'basename': 'calculate-characteristics',
-            },
-            {
-                'name': 'calculate/tsqmi',
-                'view': CalculateTSQMI,
-                'basename': 'calculate-tsqmi',
+                'name': 'calculate/math-model',
+                'view': CalculateMathModelViewSet,
+                'basename': 'math-model',
             },
         ]
 
@@ -133,13 +110,4 @@ class RepoRouter(Router):
                 'view': CalculatedTSQMIHistoryModelViewSet,
                 'basename': 'tsqmi-historical-values',
             },
-        ]
-
-    def _get_collectors_endpoints_dict(self):
-        return [
-            {
-                'name': 'calculate/math-model', 
-                'view': CalculateMathModelViewSet, 
-                'basename': 'calculate-math-model'
-            }
         ]

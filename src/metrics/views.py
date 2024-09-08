@@ -4,7 +4,6 @@ from rest_framework.generics import get_object_or_404
 from metrics.models import CollectedMetric, SupportedMetric
 from metrics.serializers import (
     CollectedMetricHistorySerializer,
-    CollectedMetricSerializer,
     LatestCollectedMetricSerializer,
     SupportedMetricSerializer,
 )
@@ -43,20 +42,6 @@ class RepositoryMetricsMixin:
         qs = repository.collected_metrics.all()
         qs = qs.values_list('metric', flat=True).distinct()
         return SupportedMetric.objects.filter(id__in=qs)
-
-
-class CollectedMetricModelViewSet(
-    RepositoryMetricsMixin,
-    mixins.CreateModelMixin,
-    viewsets.GenericViewSet,
-):
-    """
-    ViewSet para cadastrar as métricas coletadas
-    """
-
-    queryset = CollectedMetric.objects.all()
-    serializer_class = CollectedMetricSerializer
-
 
 class LatestCollectedMetricModelViewSet(
     RepositoryMetricsMixin,

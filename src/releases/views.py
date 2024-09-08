@@ -25,7 +25,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.transformations import diff
 
-
 class CreateReleaseModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)

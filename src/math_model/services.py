@@ -8,6 +8,7 @@ from resources import (
 )
 from measures.models import CalculatedMeasure, SupportedMeasure
 from organizations.models import Repository
+from metrics.serializers import CollectedMetricSerializer
 from metrics.models import CollectedMetric, SupportedMetric
 from subcharacteristics.models import CalculatedSubCharacteristic, SupportedSubCharacteristic
 from tsqmi.models import TSQMI
@@ -25,13 +26,18 @@ class MathModelServices():
     def calculate_all(self, data): 
         release_configuration = self.product.release_configuration.first()
         config_serializer = ReleaseConfigurationSerializer(release_configuration)
-        char_keys, subchar_keys, measure_keys, metric_keys = parse_release_configuration(config_serializer.data) 
 
+        char_keys, subchar_keys, measure_keys, metric_keys = parse_release_configuration(config_serializer.data) 
+# 
         metrics = self.collect_metrics(data)
-        measures = self.calculate_measures(measure_keys, release_configuration)
-        subcharacteristics = self.calculate_sucharacteristics(subchar_keys, release_configuration)
-        characteristics = self.calculcate_characterisctics(char_keys, release_configuration)
+        print(metrics)
+        # measures = self.calculate_measures(measure_keys, release_configuration)
+        # print(measures)
+        return metrics
+        # subcharacteristics = self.calculate_sucharacteristics(subchar_keys, release_configuration)
+        # characteristics = self.calculcate_characterisctics(char_keys, release_configuration)
         tsqmi = self.calculate_tsqmi(char_keys, release_configuration)
+        print(tsqmi)
         return tsqmi
 
 
@@ -42,11 +48,10 @@ class MathModelServices():
         }
 
         collected_metrics = []
-        if data.get(".github"): 
+        if data.get("github"): 
             for metric in data["github"]["metrics"]:
                 metric_key = metric["name"]
                 metric_value = metric["value"]
-
                 collected_metrics.append(
                     CollectedMetric(
                         metric=supported_metrics[metric_key],
@@ -71,9 +76,14 @@ class MathModelServices():
                             repository=self.repository
                         )
                     )
-            
+        print(collected_metrics)
         saved_metrics = CollectedMetric.objects.bulk_create(collected_metrics)
-        return saved_metrics
+        serializer_metrics = CollectedMetricSerializer(
+            saved_metrics, 
+            many=True
+        )
+        
+        return serializer_metrics
 
     def calculate_measures(self, measure_keys, release_configuration): 
         qs = SupportedMeasure.objects.filter(
@@ -251,8 +261,5 @@ class MathModelServices():
             repository=self.repository,
             value=data['value']
         )
-        print(tsqmi.__dict__)
-
         serializer = TSQMISerializer(tsqmi)
-        print(serializer)
         return serializer

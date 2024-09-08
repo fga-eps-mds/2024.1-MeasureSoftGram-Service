@@ -128,10 +128,3 @@ class CalculatedSubCharacteristic(models.Model):
         related_name='calculated_subcharacteristics',
         on_delete=models.CASCADE,
     )
-
-    # def __str__(self):
-    #     return (
-    #         f'Subcharacteristic: {self.subcharacteristic}, '
-    #         f'Value: {self.value}, '
-    #         'Created at: {self.created_at}'
-    #     )

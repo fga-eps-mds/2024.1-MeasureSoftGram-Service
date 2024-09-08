@@ -7,6 +7,7 @@ from characteristics.models import SupportedCharacteristic
 from math_model.services import MathModelServices
 from rest_framework.response import Response
 from utils.exceptions import CalculateModelException
+from utils import utils
 
 
 class CalculateMathModelViewSet(

@@ -142,47 +142,19 @@ class Command(BaseCommand):
         self.create_github_supported_metrics()
 
     def create_sonarqube_supported_metrics(self):
-        sonar_endpoint = 'https://sonarcloud.io/api/metrics/search'
-        data = []
-        try:
-            request = requests.get(sonar_endpoint)
-
-            if request.ok:
-                data = request.json()
-            else:
-                data = staticfiles.SONARQUBE_AVAILABLE_METRICS
-        except Exception:
-            data = staticfiles.SONARQUBE_AVAILABLE_METRICS
-
+        data = staticfiles.SONARQUBE_AVAILABLE_METRICS
+        
         sonar_metrics = [
             SupportedMetric(
                 key=metric['key'],
-                name=metric['name']
+                name=metric['name'], 
+                metric_type=metric['metric_type']
             )
-            for metric in data["metrics"]
+            for metric in data
         ]
         for metric in sonar_metrics:
             with contextlib.suppress(IntegrityError):
                 metric.save()
-
-        supported_metrics = {
-            supported_metric.key: supported_metric
-            for supported_metric in SupportedMetric.objects.all()
-        }
-
-        for component in staticfiles.SONARQUBE_JSON["sonarqube"]['components']:
-            for obj in component['measures']:
-                metric_key = obj['metric']
-                metric_name = namefy(metric_key)
-                metric_value = obj['value']
-
-                if obj['metric'] not in supported_metrics:
-                    supported_metrics[metric_key] = SupportedMetric.objects.create(
-                        key=metric_key,
-                        metric_type=SupportedMetric.SupportedMetricTypes.FLOAT,
-                        name=metric_name,
-                    )
-
 
     def create_github_supported_metrics(self):
         github_metrics = [
@@ -191,7 +163,7 @@ class Command(BaseCommand):
                 name=metric['name'],
                 metric_type=metric['metric_type'],
             )
-            for metric in settings.GITHUB_METRICS
+            for metric in staticfiles.GITHUB_AVAILABLE_METRICS
         ]
 
         for metric in github_metrics:
@@ -342,8 +314,8 @@ class Command(BaseCommand):
                     key__in=measures_keys,
                 )
 
-                # if measures.count() != len(measures_keys):
-                #     raise exceptions.MissingSupportedMeasureException()
+                if measures.count() != len(measures_keys):
+                    raise exceptions.MissingSupportedMeasureException()
 
                 sub_char.measures.set(measures)
 
@@ -354,7 +326,6 @@ class Command(BaseCommand):
                 'name': 'Reliability',
                 'subcharacteristics': [
                     {'key': 'testing_status'},
-                    {'key': 'reliability'},
                     {'key': 'maturity'},
                 ],
             },
@@ -659,7 +630,7 @@ class Command(BaseCommand):
 
         self.create_supported_metrics()
         self.create_suported_measures()
-        # self.create_github_suported_measures()
+        self.create_github_suported_measures()
         self.create_supported_subcharacteristics()
         self.create_supported_characteristics()
         self.create_balance_matrix()

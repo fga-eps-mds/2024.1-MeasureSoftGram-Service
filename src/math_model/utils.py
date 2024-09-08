@@ -11,8 +11,7 @@ def parse_release_configuration(pre_config):
             for measure in subcharacteristic["measures"]: 
                 measures.append(measure["key"])
                 metrics+=measure["metrics"]
-
-
+                
     return characteristics, subcharacteristics, measures, metrics
 
 
