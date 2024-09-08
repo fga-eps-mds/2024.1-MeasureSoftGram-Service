@@ -28,16 +28,11 @@ class MathModelServices():
         config_serializer = ReleaseConfigurationSerializer(release_configuration)
 
         char_keys, subchar_keys, measure_keys, metric_keys = parse_release_configuration(config_serializer.data) 
-# 
         metrics = self.collect_metrics(data)
-        print(metrics)
-        # measures = self.calculate_measures(measure_keys, release_configuration)
-        # print(measures)
-        return metrics
-        # subcharacteristics = self.calculate_sucharacteristics(subchar_keys, release_configuration)
-        # characteristics = self.calculcate_characterisctics(char_keys, release_configuration)
+        measures = self.calculate_measures(measure_keys, release_configuration)
+        subcharacteristics = self.calculate_sucharacteristics(subchar_keys, release_configuration)
+        characteristics = self.calculcate_characterisctics(char_keys, release_configuration)
         tsqmi = self.calculate_tsqmi(char_keys, release_configuration)
-        print(tsqmi)
         return tsqmi
 
 

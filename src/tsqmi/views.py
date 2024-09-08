@@ -106,25 +106,3 @@ class CalculatedTSQMIHistoryModelViewSet(
             product__organization_id=self.kwargs['organization_pk'],
         )
         return repository.calculated_tsqmis.all().reverse()
-
-
-class CalculateTSQMI(
-    mixins.CreateModelMixin,
-    viewsets.GenericViewSet,
-):
-    serializer_class = TSQMISerializer
-
-    def get_repository(self):
-        return get_object_or_404(
-            Repository,
-            id=self.kwargs['repository_pk'],
-            product_id=self.kwargs['product_pk'],
-            product__organization_id=self.kwargs['organization_pk'],
-        )
-
-    def get_product(self):
-        return get_object_or_404(
-            Product,
-            id=self.kwargs['product_pk'],
-            organization_id=self.kwargs['organization_pk'],
-        )

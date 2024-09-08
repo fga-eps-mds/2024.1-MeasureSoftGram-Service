@@ -2,8 +2,7 @@ from entity_trees.views import ReleaseConfigurationEntitiesRelationshipTreeViewS
 from goals.views import (
     CompareGoalsModelViewSet,
     CreateGoalModelViewSet,
-    CurrentGoalModelViewSet,
-    ReleaseListModelViewSet,
+    CurrentGoalModelViewSet
 )
 from organizations.routers.routers import Router
 from organizations.views import (
@@ -15,7 +14,7 @@ from release_configuration.views import (
     CreateReleaseConfigurationModelViewSet,
     CurrentReleaseConfigurationModelViewSet,
 )
-from releases.views import CreateReleaseModelViewSet, ReleaseListAllModelViewSet
+from releases.views import ReleaseModelViewSet
 
 
 class ProductRouter(Router):
@@ -70,19 +69,9 @@ class ProductRouter(Router):
             },
             {
                 'name': 'release',
-                'view': ReleaseListModelViewSet,
-                'basename': 'release-list',
-            },
-            {
-                'name': 'release/all',
-                'view': ReleaseListAllModelViewSet,
-                'basename': 'release-list-all',
-            },
-            {
-                'name': 'create/release',
-                'view': CreateReleaseModelViewSet,
+                'view': ReleaseModelViewSet,
                 'basename': 'create-release',
-            },
+            }
         ]
 
     def _get_ReleaseConfigurations_endpoints_dict(self):

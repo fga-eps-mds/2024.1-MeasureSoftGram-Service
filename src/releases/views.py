@@ -25,7 +25,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.transformations import diff
 
-class CreateReleaseModelViewSet(viewsets.ModelViewSet):
+class ReleaseModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -165,7 +165,7 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
         repositories_ids = list(
             Repository.objects.filter(product_id=product_pk)
             .values_list('id', flat=True)
-            .all()
+            .aReleaseConfigurationModelll()
         )
 
         serialized_release = ReleaseAllSerializer(release).data
@@ -181,11 +181,3 @@ class CreateReleaseModelViewSet(viewsets.ModelViewSet):
                 'accomplished': accomplished_values_with_diff_and_norm_diff,
             }
         )
-
-
-class ReleaseListAllModelViewSet(viewsets.ModelViewSet):
-    serializer_class = ReleaseAllSerializer
-    queryset = Release.objects.all()
-
-    def get_releases(self, product):
-        return Release.objects.filter(product=product)
