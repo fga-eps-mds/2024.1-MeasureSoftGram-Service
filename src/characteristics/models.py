@@ -67,7 +67,7 @@ class SupportedCharacteristic(models.Model):
         Função que recupera os valores mais recentes das subcaracterísticas
         que essa características depende para ser calculada
         """
-       
+
         subchars_params = []
 
         for subcharacteristic in self.subcharacteristics.all():

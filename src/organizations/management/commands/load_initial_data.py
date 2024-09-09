@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 metrics = SupportedMetric.objects.filter(
                     key__in=metrics_keys,
                 )
-            
+
                 if metrics.count() != len(metrics_keys):
                     raise exceptions.MissingSupportedMetricException()
 
@@ -143,11 +143,11 @@ class Command(BaseCommand):
 
     def create_sonarqube_supported_metrics(self):
         data = staticfiles.SONARQUBE_AVAILABLE_METRICS
-        
+
         sonar_metrics = [
             SupportedMetric(
                 key=metric['key'],
-                name=metric['name'], 
+                name=metric['name'],
                 metric_type=metric['metric_type']
             )
             for metric in data

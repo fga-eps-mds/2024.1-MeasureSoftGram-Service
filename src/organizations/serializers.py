@@ -341,7 +341,7 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
             request=self.context['request'],
         )
 
-    def get_actions(self, obj): 
+    def get_actions(self, obj):
         # Lista todas as ações que podem ser feitas no repositório
 
         calculate_math_model_url = self.reverse_repository_resource(
@@ -349,7 +349,7 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
         )
 
         return {
-            'collect math model': calculate_math_model_url,
+            'calculate-math-model': calculate_math_model_url,
         }
 
     def get_historical_values(self, obj: Repository):

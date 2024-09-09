@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from characteristics.models import (
     BalanceMatrix,
     CalculatedCharacteristic,
-    SupportedCharacteristic,    
+    SupportedCharacteristic,
 )
 from characteristics.serializers import (
     BalanceMatrixSerializer,
@@ -41,6 +41,7 @@ class CalculateCharacteristicViewSet(
             id=self.kwargs['product_pk'],
             organization_id=self.kwargs['organization_pk'],
         )
+
 
 class SupportedCharacteristicModelViewSet(
     mixins.ListModelMixin,

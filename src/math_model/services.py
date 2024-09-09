@@ -1,11 +1,11 @@
 from characteristics.models import CalculatedCharacteristic, SupportedCharacteristic
-from rest_framework.generics import get_object_or_404
 from resources import (
-    calculate_measures, 
-    calculate_subcharacteristics, 
-    calculate_characteristics, 
+    calculate_measures,
+    calculate_subcharacteristics,
+    calculate_characteristics,
     calculate_tsqmi
 )
+from measures.serializers import CalculatedMeasureSerializer
 from measures.models import CalculatedMeasure, SupportedMeasure
 from organizations.models import Repository
 from metrics.serializers import CollectedMetricSerializer
@@ -13,28 +13,30 @@ from metrics.models import CollectedMetric, SupportedMetric
 from subcharacteristics.models import CalculatedSubCharacteristic, SupportedSubCharacteristic
 from tsqmi.models import TSQMI
 from tsqmi.serializers import TSQMISerializer
-from utils import namefy
-from utils import utils
+from utils import utils, namefy
 from math_model.utils import parse_release_configuration
+from characteristics.serializers import CalculatedCharacteristicSerializer
+from subcharacteristics.serializers import CalculatedSubCharacteristicSerializer
 from release_configuration.serializers import ReleaseConfigurationSerializer
-    
-class MathModelServices():     
-    def __init__(self, repository_id, product_id, organization_id): 
+
+
+class MathModelServices():
+    def __init__(self, repository_id, product_id, organization_id):
         self.repository = utils.get_repository(organization_id, product_id, repository_id)
         self.product = utils.get_product(organization_id, product_id)
 
-    def calculate_all(self, data): 
+    def calculate_all(self, data):
         release_configuration = self.product.release_configuration.first()
         config_serializer = ReleaseConfigurationSerializer(release_configuration)
+        char_keys, subchar_keys, measure_keys = parse_release_configuration(config_serializer.data)
 
-        char_keys, subchar_keys, measure_keys, metric_keys = parse_release_configuration(config_serializer.data) 
-        metrics = self.collect_metrics(data)
-        measures = self.calculate_measures(measure_keys, release_configuration)
-        subcharacteristics = self.calculate_sucharacteristics(subchar_keys, release_configuration)
-        characteristics = self.calculcate_characterisctics(char_keys, release_configuration)
-        tsqmi = self.calculate_tsqmi(char_keys, release_configuration)
-        return tsqmi
-
+        response = {}
+        response["metrics"] = self.collect_metrics(data)
+        response["measures"] = self.calculate_measures(measure_keys, release_configuration)
+        response["subcharacteristics"] = self.calculate_sucharacteristics(subchar_keys, release_configuration)
+        response["characteristics"] = self.calculcate_characterisctics(char_keys, release_configuration)
+        response["tsqmi"] = self.calculate_tsqmi(release_configuration)
+        return response
 
     def collect_metrics(self, data):
         supported_metrics = {
@@ -43,7 +45,7 @@ class MathModelServices():
         }
 
         collected_metrics = []
-        if data.get("github"): 
+        if data.get("github"):
             for metric in data["github"]["metrics"]:
                 metric_key = metric["name"]
                 metric_value = metric["value"]
@@ -51,7 +53,7 @@ class MathModelServices():
                     CollectedMetric(
                         metric=supported_metrics[metric_key],
                         value=float(metric_value),
-                        repository=self.repository, 
+                        repository=self.repository,
                         qualifier="TRK"
                     )
                 )
@@ -59,28 +61,26 @@ class MathModelServices():
             for component in data["sonarqube"]['components']:
                 for obj in component['measures']:
                     metric_key = obj['metric']
-                    metric_name = namefy(metric_key)
                     metric_value = obj['value']
 
                     collected_metrics.append(
                         CollectedMetric(
                             qualifier=component['qualifier'],
-                            path=component['path'], 
+                            path=component['path'],
                             metric=supported_metrics[metric_key],
                             value=float(metric_value),
                             repository=self.repository
                         )
                     )
-        print(collected_metrics)
         saved_metrics = CollectedMetric.objects.bulk_create(collected_metrics)
         serializer_metrics = CollectedMetricSerializer(
-            saved_metrics, 
+            saved_metrics,
             many=True
         )
-        
+
         return serializer_metrics
 
-    def calculate_measures(self, measure_keys, release_configuration): 
+    def calculate_measures(self, measure_keys, release_configuration):
         qs = SupportedMeasure.objects.filter(
             key__in=measure_keys
         ).prefetch_related(
@@ -130,21 +130,24 @@ class MathModelServices():
                 )
             )
         saved_measures = CalculatedMeasure.objects.bulk_create(calculated_measures)
-        return saved_measures
+        serializer_measures = CalculatedMeasureSerializer(
+            saved_measures,
+            many=True
+        )
+        return serializer_measures
 
-    def calculate_sucharacteristics(self, subcharacteristics_keys, release_configuration): 
-        qs = SupportedSubCharacteristic.objects.filter(
+    def calculate_sucharacteristics(self, subcharacteristics_keys, release_configuration):
+        query_set = SupportedSubCharacteristic.objects.filter(
             key__in=subcharacteristics_keys
         ).prefetch_related(
             'measures',
             'measures__calculated_measures',
         )
 
-        # 3. get core json response
         core_params = {'subcharacteristics': []}
-        subchar: SupportedSubCharacteristic
 
-        for subchar in qs:
+        for subchar in query_set:
+            subchar: SupportedSubCharacteristic
             measure_params = subchar.get_latest_measure_params(release_configuration)
             core_params['subcharacteristics'].append(
                 {
@@ -155,7 +158,6 @@ class MathModelServices():
 
         calculate_result = calculate_subcharacteristics(core_params)
 
-        # 4. Save data
         calculated_values = {
             subcharacteristic['key']: subcharacteristic['value']
             for subcharacteristic in calculate_result['subcharacteristics']
@@ -164,7 +166,7 @@ class MathModelServices():
         calculated_subcharacteristics = []
 
         subchar: SupportedSubCharacteristic
-        for subchar in qs:
+        for subchar in query_set:
             value = calculated_values[subchar.key]
 
             calculated_subcharacteristics.append(
@@ -176,9 +178,13 @@ class MathModelServices():
             )
 
         saved_subchar = CalculatedSubCharacteristic.objects.bulk_create(calculated_subcharacteristics)
-        return saved_subchar
+        serializer_subchar = CalculatedSubCharacteristicSerializer(
+            saved_subchar,
+            many=True
+        )
+        return serializer_subchar
 
-    def calculcate_characterisctics(self, characteristics_keys, release_configuration): 
+    def calculcate_characterisctics(self, characteristics_keys, release_configuration):
         qs = SupportedCharacteristic.objects.filter(
             key__in=characteristics_keys
         ).prefetch_related(
@@ -221,9 +227,13 @@ class MathModelServices():
                 )
             )
         saved_char = CalculatedCharacteristic.objects.bulk_create(calculated_characteristics)
-        return calculated_characteristics
-    
-    def calculate_tsqmi(self, char_keys, release_configuration): 
+        serializer_char = CalculatedCharacteristicSerializer(
+            saved_char,
+            many=True
+        )
+        return serializer_char
+
+    def calculate_tsqmi(self, release_configuration):
         characteristics_keys = [
             characteristic['key']
             for characteristic in release_configuration.data['characteristics']

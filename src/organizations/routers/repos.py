@@ -110,4 +110,3 @@ class RepoRouter(Router):
                 'basename': 'tsqmi-historical-values',
             },
         ]
-

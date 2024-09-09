@@ -43,6 +43,7 @@ class RepositoryMetricsMixin:
         qs = qs.values_list('metric', flat=True).distinct()
         return SupportedMetric.objects.filter(id__in=qs)
 
+
 class LatestCollectedMetricModelViewSet(
     RepositoryMetricsMixin,
     mixins.ListModelMixin,

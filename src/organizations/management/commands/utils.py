@@ -29,7 +29,7 @@ def create_supported_characteristics(suported_characteristics):
             subcharacteristics = SupportedSubCharacteristic.objects.filter(
                 key__in=subcharacteristics_keys,
             )
- 
+
             if subcharacteristics.count() != len(subcharacteristics_keys):
                 raise exceptions.MissingSupportedSubCharacteristicError()
 
@@ -107,7 +107,7 @@ def get_subcharacteristics(characteristic: SupportedCharacteristic):
     return data
 
 
-def create_a_ReleaseConfiguration(characteristics_keys, product):
+def create_a_releaseconfig(characteristics_keys, product):
     """
     Função que gera uma pré-configuração com pesos divididos
     igualmente com base nas características passadas no parâmetro.
@@ -132,15 +132,15 @@ def create_a_ReleaseConfiguration(characteristics_keys, product):
         )
 
     data = force_the_sum_to_equal_100(data)
-    ReleaseConfiguration = {'characteristics': data}
+    release_config = {'characteristics': data}
 
-    ReleaseConfiguration = ReleaseConfiguration.objects.create(
+    release_config = ReleaseConfiguration.objects.create(
         name='custom release-config',
-        data=ReleaseConfiguration,
+        data=release_config,
         product=product,
     )
 
-    return ReleaseConfiguration
+    return release_config
 
 
 def get_random_start_at():
