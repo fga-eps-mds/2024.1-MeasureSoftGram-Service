@@ -46,7 +46,7 @@ class ReleaseConfigurationSerializer(serializers.ModelSerializer):
 
         return attrs
 
-        
+
 class MeasureSerializer(serializers.Serializer):
     key = serializers.CharField()
     weight = serializers.IntegerField()
