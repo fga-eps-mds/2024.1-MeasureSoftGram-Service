@@ -74,13 +74,13 @@ SUBCHAR_RESPONSE = [
     {
         'id': 5,
         'subcharacteristic_id': 9,
-        'value': 0.10000000000000002,
+        'value': 0.1,
         'created_at': '2024-09-08T17:00:00-03:00'
     },
     {
         'id': 6,
         'subcharacteristic_id': 10,
-        'value': 0.10000000000000002,
+        'value': 0.1,
         'created_at': '2024-09-08T17:00:00-03:00'
     },
     {
