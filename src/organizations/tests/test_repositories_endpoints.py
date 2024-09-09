@@ -374,3 +374,5 @@ class RepositoriesViewsSetCase(APITestCaseExpanded):
 
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 400)
+
+

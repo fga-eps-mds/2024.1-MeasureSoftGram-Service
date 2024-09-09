@@ -11,8 +11,9 @@ from organizations.views import (
     RepositoryViewSet,
 )
 from release_configuration.views import (
-    CreateReleaseConfigurationModelViewSet,
-    CurrentReleaseConfigurationModelViewSet,
+    CreateReleaseConfigModelViewSet,
+    CurrentReleaseConfigModelViewSet,
+    DefaultPreConfigModelViewSet,
 )
 from releases.views import ReleaseModelViewSet
 
@@ -78,12 +79,17 @@ class ProductRouter(Router):
         return [
             {
                 'name': 'current/release-config',
-                'view': CurrentReleaseConfigurationModelViewSet,
+                'view': CurrentReleaseConfigModelViewSet,
                 'basename': 'current-release-config',
             },
             {
+                'name': 'default/pre-config',
+                'view': DefaultPreConfigModelViewSet,
+                'basename': 'default-pre-config',
+            },
+            {
                 'name': 'create/release-config',
-                'view': CreateReleaseConfigurationModelViewSet,
+                'view': CreateReleaseConfigModelViewSet,
                 'basename': 'create-release-config',
             },
         ]

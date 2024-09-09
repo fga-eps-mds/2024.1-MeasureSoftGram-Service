@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from organizations.models import Product
 from release_configuration.models import ReleaseConfiguration
 from measures.models import SupportedMeasure
-from release_configuration.serializers import ReleaseConfigurationSerializer
+from release_configuration.serializers import ReleaseConfigurationSerializer, DefaultPreConfigSerializer
 from staticfiles import SUPPORTED_MEASURES
 
+from utils import staticfiles
 
-class CurrentReleaseConfigurationModelViewSet(
+
+class CurrentReleaseConfigModelViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
@@ -30,7 +32,26 @@ class CurrentReleaseConfigurationModelViewSet(
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class CreateReleaseConfigurationModelViewSet(
+class DefaultPreConfigModelViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = ReleaseConfiguration.objects.all()
+    serializer_class = ReleaseConfigurationSerializer
+
+    def get_product(self):
+        return get_object_or_404(
+            Product,
+            id=self.kwargs["product_pk"],
+        )
+
+    def list(self, request, *args, **kwargs):
+        pre_config = staticfiles.DEFAULT_PRE_CONFIG
+        serializer = DefaultPreConfigSerializer(pre_config)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class CreateReleaseConfigModelViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):

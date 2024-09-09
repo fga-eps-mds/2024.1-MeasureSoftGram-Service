@@ -119,6 +119,8 @@ class Repository(models.Model):
         related_name='repositories',
     )
 
+    imported = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         self.key = slugify(self.name)
         self.key = f'{self.product.key}-{self.key}'

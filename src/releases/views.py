@@ -14,7 +14,8 @@ from releases.service import (
     get_process_calculated_characteristics,
     get_calculated_characteristic_by_ids_repositories,
     get_arrays_diff,
-    calculate_diff
+    calculate_diff,
+    update_release_end_at
 )
 
 from rest_framework import viewsets
@@ -68,15 +69,19 @@ class ReleaseModelViewSet(viewsets.ModelViewSet):
 
         release = Release.objects.filter(
             product=product_key,
-            start_at__gte=init_date,
             start_at__lte=final_date,
             end_at__gte=init_date,
-            end_at__lte=final_date,
-        ).first()
+        )
 
-        if release:
+        if release.count() > 1:
             return Response(
-                data={'detail': 'Já existe uma release neste período'},
+                data={'detail': 'Já existem múltiplas releases neste período'},
+                status=400,
+            )
+        elif release:
+            release_data = ReleaseSerializer(release.first()).data
+            return Response(
+                data={'detail': 'Já existe uma release neste período', 'release': release_data},
                 status=400,
             )
 
@@ -182,3 +187,28 @@ class ReleaseModelViewSet(viewsets.ModelViewSet):
                 'accomplished': accomplished_values_with_diff_and_norm_diff,
             }
         )
+
+    @action(detail=True, methods=['put'], url_path='update-end-at')
+    def update_end_at(self, request, pk=None, *args, **kwargs):
+        # Obtendo o novo valor de end_at da requisição
+        new_end_at = request.data.get('end_at')
+
+        if not new_end_at:
+            return Response({'detail': 'O campo end_at é obrigatório.'}, status=400)
+
+        # Utilizando o serviço para atualizar o end_at
+        release = update_release_end_at(pk, new_end_at)  # type: ignore
+
+        if release:
+            serializer = self.get_serializer(release)
+            return Response(serializer.data, status=200)
+        else:
+            return Response({'detail': 'Release não encontrada'}, status=404)
+
+
+class ReleaseListAllModelViewSet(viewsets.ModelViewSet):
+    serializer_class = ReleaseAllSerializer
+    queryset = Release.objects.all()
+
+    def get_releases(self, product):
+        return Release.objects.filter(product=product)

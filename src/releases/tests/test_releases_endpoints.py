@@ -326,6 +326,48 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
             response.json()['detail'], 'Já existe uma release neste período'
         )
 
+    def test_is_valid_release_with_the_existence_of_multiple_releases_and_invalid_dates(
+        self,
+    ):
+        Release.objects.create(
+            id=999,
+            created_at=date.today(),
+            start_at=date.today(),
+            end_at=date.today() + timedelta(days=2),
+            release_name='Release 999',
+            created_by=self.user,
+            product=self.product,
+            goal=self.goal,
+        )
+
+        Release.objects.create(
+            id=998,
+            created_at=date.today(),
+            start_at=date.today() + timedelta(days=3),
+            end_at=date.today() + timedelta(days=4),
+            release_name='Release 999',
+            created_by=self.user,
+            product=self.product,
+            goal=self.goal,
+        )
+
+        data = {
+            'nome': 'Release 111',
+            'dt-inicial': date.today(),
+            'dt-final': date.today() + timedelta(days=4),
+        }
+
+        response = self.client.get(
+            path=f'{self.url_default}is-valid/?{data["nome"]}&{data["dt-inicial"]}&{data["dt-final"]}',
+            data=data,
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['detail'], 'Já existem múltiplas releases neste período'
+        )
+
     def test_is_valid_release_with_the_existence_of_releases_and_invalid_name(
         self,
     ):
@@ -515,3 +557,29 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
 
         assert response.status_code == 404
         assert response.json()['detail'] == 'Release não encontrada'
+
+    def test_change_release_end_date(
+        self,
+    ):
+        Release.objects.create(
+            id=999,
+            created_at=date.today(),
+            start_at=date.today(),
+            end_at=date.today() + timedelta(days=2),
+            release_name='Release 999',
+            created_by=self.user,
+            product=self.product,
+            goal=self.goal,
+        )
+
+        data = {
+            "end_at": "2024-02-05T23:59:59Z"
+        }
+
+        response = self.client.put(
+            path=f'{self.url_default}999/update-end-at/',
+            data=data,
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)

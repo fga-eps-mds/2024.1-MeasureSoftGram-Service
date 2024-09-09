@@ -167,7 +167,7 @@ def get_arrays_diff(goal_data: dict, characteristic_repo: dict):
     array_rp = []
     array_rd = []
 
-    for characteristic in 'reliability', 'maintainability':
+    for characteristic in 'reliability', 'maintainability', 'functional_suitability':
         try:
             if (
                 goal_data[characteristic]
@@ -179,3 +179,18 @@ def get_arrays_diff(goal_data: dict, characteristic_repo: dict):
             continue
 
     return array_rp, array_rd
+
+
+def update_release_end_at(release_id: int, new_end_at):
+    """
+    Atualiza o campo `end_at` de uma Release.
+
+    :param release_id: ID da Release a ser atualizada.
+    :param new_end_at: Novo valor para o campo `end_at`.
+    :return: A Release atualizada.
+    """
+    release = Release.objects.get(id=release_id)
+    release.end_at = new_end_at
+    release.save()
+
+    return release
