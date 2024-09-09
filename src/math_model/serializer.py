@@ -27,16 +27,14 @@ class SonarQubeJSONSerializer(serializers.Serializer):
 
 
 class MetricsSerializer(serializers.Serializer):
-    product_id: serializers.IntegerField()
-    repository_id: serializers.IntegerField()
-    organization_id: serializers.IntegerField()
-    sonarqube: SonarQubeJSONSerializer()
-    github: serializers.DictField()
+    sonarqube = SonarQubeJSONSerializer()
+    github = serializers.DictField()
 
 
 class CalculateResponseSerializer(serializers.Serializer):
-    tsqmi: TSQMISerializer
-    characteristics: CalculatedCharacteristicSerializer(many=True)
-    subcharacteristics: CalculatedSubCharacteristicSerializer(many=True)
-    measures: CalculatedMeasureSerializer(many=True)
-    metrics: CollectedMetricSerializer(many=True)
+    tsqmi = TSQMISerializer
+    metrics = CollectedMetricSerializer(many=True)
+    measures = CalculatedMeasureSerializer(many=True)
+    subcharacteristics = CalculatedSubCharacteristicSerializer(many=True)
+    characteristics = CalculatedCharacteristicSerializer(many=True)
+    tsqmi = TSQMISerializer()

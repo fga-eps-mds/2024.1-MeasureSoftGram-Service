@@ -24,7 +24,7 @@ class MathModelServicesTest(APITestCaseExpanded):
             product=self.product,
         )
         self.release_config = self.product.release_configuration.first()
-        self.services = MathModelServices(self.repository.id, self.product.id, self.org.id)
+        self.services = MathModelServices(self.repository, self.product)
 
     def test_if_parse_release_config(self):
         config_serializer = ReleaseConfigurationSerializer(self.release_config)
@@ -95,7 +95,7 @@ class MathModelServicesTest(APITestCaseExpanded):
             measure_keys=measures_keys,
             release_configuration=self.release_config
         )
-        assert calculated_measures.data == dicts.MEASURE_RESPONSE
+        assert calculated_measures == dicts.MEASURE_RESPONSE
 
     def test_if_calculate_subcharacteristics_is_working(self):
 
@@ -111,7 +111,7 @@ class MathModelServicesTest(APITestCaseExpanded):
             subcharacteristics_keys=keys,
             release_configuration=self.release_config
         )
-        assert subchar.data == dicts.SUBCHAR_RESPONSE
+        assert subchar == dicts.SUBCHAR_RESPONSE
 
     def test_if_calculate_characteristics_is_working(self):
         qs = self.release_config.get_characteristics_qs()
@@ -128,7 +128,7 @@ class MathModelServicesTest(APITestCaseExpanded):
             characteristics_keys=keys,
             release_configuration=self.release_config
         )
-        assert char.data == dicts.CHAR_RESPONSE
+        assert char == dicts.CHAR_RESPONSE
 
     def test_if_calculate_tsqmi_is_working(self):
         for char in SupportedCharacteristic.objects.all():
@@ -137,4 +137,4 @@ class MathModelServicesTest(APITestCaseExpanded):
             )
 
         tsqmi = self.services.calculate_tsqmi(self.release_config)
-        assert tsqmi.data == {'id': 1, 'value': 0.1, 'created_at': '2024-09-08T17:00:00-03:00'}
+        assert tsqmi == {'id': 1, 'value': 0.1, 'created_at': '2024-09-08T17:00:00-03:00'}

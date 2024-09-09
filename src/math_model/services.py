@@ -14,29 +14,14 @@ from subcharacteristics.models import CalculatedSubCharacteristic, SupportedSubC
 from tsqmi.models import TSQMI
 from tsqmi.serializers import TSQMISerializer
 from utils import utils, namefy
-from math_model.utils import parse_release_configuration
 from characteristics.serializers import CalculatedCharacteristicSerializer
 from subcharacteristics.serializers import CalculatedSubCharacteristicSerializer
-from release_configuration.serializers import ReleaseConfigurationSerializer
 
 
 class MathModelServices():
-    def __init__(self, repository_id, product_id, organization_id):
-        self.repository = utils.get_repository(organization_id, product_id, repository_id)
-        self.product = utils.get_product(organization_id, product_id)
-
-    def calculate_all(self, data):
-        release_configuration = self.product.release_configuration.first()
-        config_serializer = ReleaseConfigurationSerializer(release_configuration)
-        char_keys, subchar_keys, measure_keys = parse_release_configuration(config_serializer.data)
-
-        response = {}
-        response["metrics"] = self.collect_metrics(data)
-        response["measures"] = self.calculate_measures(measure_keys, release_configuration)
-        response["subcharacteristics"] = self.calculate_sucharacteristics(subchar_keys, release_configuration)
-        response["characteristics"] = self.calculcate_characterisctics(char_keys, release_configuration)
-        response["tsqmi"] = self.calculate_tsqmi(release_configuration)
-        return response
+    def __init__(self, repository, product):
+        self.repository = repository
+        self.product = product
 
     def collect_metrics(self, data):
         supported_metrics = {
@@ -78,7 +63,7 @@ class MathModelServices():
             many=True
         )
 
-        return serializer_metrics
+        return serializer_metrics.data
 
     def calculate_measures(self, measure_keys, release_configuration):
         qs = SupportedMeasure.objects.filter(
@@ -134,7 +119,7 @@ class MathModelServices():
             saved_measures,
             many=True
         )
-        return serializer_measures
+        return serializer_measures.data
 
     def calculate_sucharacteristics(self, subcharacteristics_keys, release_configuration):
         query_set = SupportedSubCharacteristic.objects.filter(
@@ -182,7 +167,7 @@ class MathModelServices():
             saved_subchar,
             many=True
         )
-        return serializer_subchar
+        return serializer_subchar.data
 
     def calculcate_characterisctics(self, characteristics_keys, release_configuration):
         qs = SupportedCharacteristic.objects.filter(
@@ -231,7 +216,7 @@ class MathModelServices():
             saved_char,
             many=True
         )
-        return serializer_char
+        return serializer_char.data
 
     def calculate_tsqmi(self, release_configuration):
         characteristics_keys = [
@@ -267,4 +252,4 @@ class MathModelServices():
             value=data['value']
         )
         serializer = TSQMISerializer(tsqmi)
-        return serializer
+        return serializer.data
