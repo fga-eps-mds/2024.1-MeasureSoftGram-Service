@@ -32,7 +32,7 @@ class ReleaseEndpointsTestCase(APITestCaseExpanded):
                 'maintainability': 53
             },
         )
-        self.url_default = f'/api/v1/organizations/{self.org.id}/products/{self.product.id}/create/release/'
+        self.url_default = f'/api/v1/organizations/{self.org.id}/products/{self.product.id}/release/'
 
     def test_create_new_release_without_description(self):
         data = {

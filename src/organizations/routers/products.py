@@ -1,9 +1,8 @@
-from entity_trees.views import PreConfigEntitiesRelationshipTreeViewSet
+from entity_trees.views import ReleaseConfigurationEntitiesRelationshipTreeViewSet
 from goals.views import (
     CompareGoalsModelViewSet,
     CreateGoalModelViewSet,
-    CurrentGoalModelViewSet,
-    ReleaseListModelViewSet,
+    CurrentGoalModelViewSet
 )
 from organizations.routers.routers import Router
 from organizations.views import (
@@ -11,12 +10,12 @@ from organizations.views import (
     RepositoriesTSQMILatestValueViewSet,
     RepositoryViewSet,
 )
-from pre_configs.views import (
-    CreatePreConfigModelViewSet,
-    CurrentPreConfigModelViewSet,
+from release_configuration.views import (
+    CreateReleaseConfigModelViewSet,
+    CurrentReleaseConfigModelViewSet,
     DefaultPreConfigModelViewSet,
 )
-from releases.views import CreateReleaseModelViewSet, ReleaseListAllModelViewSet
+from releases.views import ReleaseModelViewSet
 
 
 class ProductRouter(Router):
@@ -28,8 +27,8 @@ class ProductRouter(Router):
             children=[
                 {
                     'name': 'entity-relationship-tree',
-                    'view': PreConfigEntitiesRelationshipTreeViewSet,
-                    'basename': 'pre-config-entity-relationship-tree',
+                    'view': ReleaseConfigurationEntitiesRelationshipTreeViewSet,
+                    'basename': 'release-config-entity-relationship-tree',
                 },
                 {
                     'name': 'repositories-tsqmi-latest-values',
@@ -47,7 +46,7 @@ class ProductRouter(Router):
                     'basename': '',
                 },
                 *self._get_goals_endpoints_dicts(),
-                *self._get_preconfigs_endpoints_dict(),
+                *self._get_ReleaseConfigurations_endpoints_dict(),
                 *children,
             ],
         )
@@ -71,27 +70,17 @@ class ProductRouter(Router):
             },
             {
                 'name': 'release',
-                'view': ReleaseListModelViewSet,
-                'basename': 'release-list',
-            },
-            {
-                'name': 'release/all',
-                'view': ReleaseListAllModelViewSet,
-                'basename': 'release-list-all',
-            },
-            {
-                'name': 'create/release',
-                'view': CreateReleaseModelViewSet,
+                'view': ReleaseModelViewSet,
                 'basename': 'create-release',
-            },
+            }
         ]
 
-    def _get_preconfigs_endpoints_dict(self):
+    def _get_ReleaseConfigurations_endpoints_dict(self):
         return [
             {
-                'name': 'current/pre-config',
-                'view': CurrentPreConfigModelViewSet,
-                'basename': 'current-pre-config',
+                'name': 'current/release-config',
+                'view': CurrentReleaseConfigModelViewSet,
+                'basename': 'current-release-config',
             },
             {
                 'name': 'default/pre-config',
@@ -99,8 +88,8 @@ class ProductRouter(Router):
                 'basename': 'default-pre-config',
             },
             {
-                'name': 'create/pre-config',
-                'view': CreatePreConfigModelViewSet,
-                'basename': 'create-pre-config',
+                'name': 'create/release-config',
+                'view': CreateReleaseConfigModelViewSet,
+                'basename': 'create-release-config',
             },
         ]

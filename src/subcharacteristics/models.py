@@ -56,7 +56,7 @@ class SupportedSubCharacteristic(models.Model):
               - Desconfio que aqui esteja rolando vários inner joins
 
         raises:
-            utils.exceptions.MeasureNotDefinedInPreConfiguration:
+            utils.exceptions.MeasureNotDefinedInReleaseConfigurationuration:
                 Caso a uma medida não esteja definida no pre_config
         """
         measures_params = []
@@ -128,10 +128,3 @@ class CalculatedSubCharacteristic(models.Model):
         related_name='calculated_subcharacteristics',
         on_delete=models.CASCADE,
     )
-
-    # def __str__(self):
-    #     return (
-    #         f'Subcharacteristic: {self.subcharacteristic}, '
-    #         f'Value: {self.value}, '
-    #         'Created at: {self.created_at}'
-    #     )

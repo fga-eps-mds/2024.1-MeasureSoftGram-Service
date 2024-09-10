@@ -43,9 +43,6 @@ class SupportedCharacteristic(models.Model):
         TODO: - Melhorar a query para o banco de dados.
               - Desconfio que aqui esteja rolando vários inner joins
 
-        raises:
-            utils.exceptions.CharacteristicNotDefinedInPreConfiguration:
-                Caso a uma características não esteja definida no pre_config
         """
         chars_params = []
 
@@ -69,14 +66,8 @@ class SupportedCharacteristic(models.Model):
         """
         Função que recupera os valores mais recentes das subcaracterísticas
         que essa características depende para ser calculada
-
-        TODO: - Melhorar a query para o banco de dados.
-              - Desconfio que aqui esteja rolando vários inner joins
-
-        raises:
-            utils.exceptions.SubCharacteristicNotDefinedInPreConfiguration:
-                Caso a uma subcaracterísticas não esteja definida no pre_config
         """
+
         subchars_params = []
 
         for subcharacteristic in self.subcharacteristics.all():
@@ -200,10 +191,3 @@ class CalculatedCharacteristic(models.Model):
         null=True,
         blank=True,
     )
-
-    # def __str__(self):
-    #     return (
-    #         f'Characteristic: {self.characteristic}, '
-    #         f'Value: {self.value}, '
-    #         f'Created at: {self.created_at}'
-    #     )

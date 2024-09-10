@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     "django_apscheduler",
+    "drf_yasg"
 ]
 
 APPLICATION_APPS = [
@@ -85,10 +86,10 @@ APPLICATION_APPS = [
     "subcharacteristics",
     "characteristics",
     "tsqmi",
-    "pre_configs",
+    "release_configuration",
     "goals",
     "entity_trees",
-    "collectors",
+    "math_model",
     "utils",
     "releases",
 ]
@@ -106,7 +107,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # new
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -282,29 +283,6 @@ if DEBUG:
         "127.0.0.1",
         "10.0.2.2",
     ]
-
-GITHUB_METRICS = [
-    {
-        "key": "sum_ci_feedback_times",
-        "name": "Sum of time spent in seconds on builds",
-        "metric_type": "INT",
-    },
-    {
-        "key": "total_builds",
-        "name": "Total build count",
-        "metric_type": "INT",
-    },
-    {
-        "key": "resolved_issues",
-        "name": "Total resolved issues count on the release period",
-        "metric_type": "INT",
-    },
-    {
-        "key": "total_issues",
-        "name": "Total issues count on the release period",
-        "metric_type": "INT",
-    },
-]
 
 GITHUB_SUPPORTED_MEASURES = [
     {

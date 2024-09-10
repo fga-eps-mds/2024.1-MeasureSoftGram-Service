@@ -20,18 +20,19 @@ from characteristics.models import (
     CalculatedCharacteristic,
     SupportedCharacteristic,
 )
-from collectors.sonarqube.utils import import_sonar_metrics
+from math_model.services import MathModelServices
 from goals.serializers import GoalSerializer
 from measures.models import CalculatedMeasure, SupportedMeasure
 from metrics.models import CollectedMetric, SupportedMetric
 from organizations.models import Organization, Product, Repository
-from pre_configs.models import PreConfig
+from release_configuration.models import ReleaseConfiguration
 from staticfiles import SUPPORTED_MEASURES
 from subcharacteristics.models import (
     CalculatedSubCharacteristic,
     SupportedSubCharacteristic,
 )
 from tsqmi.models import TSQMI
+from utils import namefy
 
 # Local Imports
 from utils import (
@@ -141,25 +142,19 @@ class Command(BaseCommand):
         self.create_github_supported_metrics()
 
     def create_sonarqube_supported_metrics(self):
-        sonar_endpoint = 'https://sonarcloud.io/api/metrics/search'
+        data = staticfiles.SONARQUBE_AVAILABLE_METRICS
 
-        try:
-            request = requests.get(sonar_endpoint)
-
-            if request.ok:
-                data = request.json()
-            else:
-                data = staticfiles.SONARQUBE_AVAILABLE_METRICS
-        except Exception:
-            data = staticfiles.SONARQUBE_AVAILABLE_METRICS
-
-        self.model_generator(SupportedMetric, data['metrics'])
-
-        import_sonar_metrics(
-            staticfiles.SONARQUBE_JSON,
-            None,
-            only_create_supported_metrics=True,
-        )
+        sonar_metrics = [
+            SupportedMetric(
+                key=metric['key'],
+                name=metric['name'],
+                metric_type=metric['metric_type']
+            )
+            for metric in data
+        ]
+        for metric in sonar_metrics:
+            with contextlib.suppress(IntegrityError):
+                metric.save()
 
     def create_github_supported_metrics(self):
         github_metrics = [
@@ -168,7 +163,7 @@ class Command(BaseCommand):
                 name=metric['name'],
                 metric_type=metric['metric_type'],
             )
-            for metric in settings.GITHUB_METRICS
+            for metric in staticfiles.GITHUB_AVAILABLE_METRICS
         ]
 
         for metric in github_metrics:
@@ -319,8 +314,8 @@ class Command(BaseCommand):
                     key__in=measures_keys,
                 )
 
-                # if measures.count() != len(measures_keys):
-                #     raise exceptions.MissingSupportedMeasureException()
+                if measures.count() != len(measures_keys):
+                    raise exceptions.MissingSupportedMeasureException()
 
                 sub_char.measures.set(measures)
 
@@ -331,7 +326,6 @@ class Command(BaseCommand):
                 'name': 'Reliability',
                 'subcharacteristics': [
                     {'key': 'testing_status'},
-                    {'key': 'reliability'},
                     {'key': 'maturity'},
                 ],
             },
@@ -407,14 +401,14 @@ class Command(BaseCommand):
         )
 
     def create_default_pre_config(self, product):
-        PreConfig.objects.get_or_create(
+        ReleaseConfiguration.objects.get_or_create(
             name='Default pre-config',
             data=staticfiles.DEFAULT_PRE_CONFIG,
             product=product,
         )
 
     def create_a_goal(self, product: Product):
-        pre_config = product.pre_configs.first()
+        pre_config = product.release_configuration.first()
         data = get_random_goal_data(pre_config)
         serializer = GoalSerializer(data=data)
 
@@ -634,7 +628,7 @@ class Command(BaseCommand):
 
         self.create_supported_metrics()
         self.create_suported_measures()
-        # self.create_github_suported_measures()
+        self.create_github_suported_measures()
         self.create_supported_subcharacteristics()
         self.create_supported_characteristics()
         self.create_balance_matrix()
