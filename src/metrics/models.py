@@ -2,6 +2,7 @@ from typing import Set, Union
 
 from django.db import models
 from django.utils import timezone
+from datetime import timedelta
 
 
 class SupportedMetric(models.Model):
@@ -109,10 +110,8 @@ class SupportedMetric(models.Model):
             same_day = latest_metric.created_at
 
             # Remove hours, minutes and seconds
-            begin = same_day.replace(hour=0, minute=0, second=0, microsecond=0)
-            end = same_day.replace(
-                hour=23, minute=59, second=59, microsecond=0
-            )
+            begin = same_day - timedelta(minutes=10)
+            end = same_day
 
             # Métrica de arquivos (inclusive de arquivos vazios)
             metrics_qs = self.collected_metrics.filter(
