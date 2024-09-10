@@ -78,11 +78,11 @@ Our services are available on [Docker Hub](https://hub.docker.com/):
 ### Wiki
 
 For more informations, you can see our wiki:
-- [Wiki](https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/).
+- [Wiki](https://fga-eps-mds.github.io/2024.1-MeasureSoftGram-DOC/).
 
 ## Contribute
 
-Do you want to contribute with our project? Access our [contribution guide](https://github.com/fga-eps-mds/2021-2-MeasureSoftGram-Service/blob/develop/CONTRIBUTING.md) where we explain how you do it.
+Do you want to contribute with our project? Access our [contribution guide](https://github.com/fga-eps-mds/2024-1-MeasureSoftGram-Service/blob/develop/CONTRIBUTING.md) where we explain how you do it.
 
 ## License
 
