@@ -1,9 +1,10 @@
 name: msg
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
 
 jobs:
   build:
@@ -17,8 +18,8 @@ jobs:
       with: 
         githubToken: ${{ secrets.GITHUBTOKEN }} # Token do GitHub
         msgramServiceToken: ${{ secrets.MSGRAMSERVICETOKEN }} # Token para acessar o serviço MeasureSoftGram
-        productName: "Produto Teste"
-        workflowName: 'build' # Nome do seu worflow que realiza a build da release
+        productName: "Measure"
+        workflowName: 'Build' # Nome do seu worflow que realiza a build da release
         collectSonarqubeMetrics: true # Flag que determina se métricas do Sonarqube serão persistidas
         collectGithubMetrics: true # Flag que determina se métricas do Github serão persistidas
         usLabel: "US" # Lab
