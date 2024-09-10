@@ -11,11 +11,11 @@ from release_configuration.serializers import ReleaseConfigurationSerializer
 class CalculateMathModelViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
-):    
+):
     """
     ViewSet para cálculo do modelo matematico do MeasureSoftGram
     """
-    
+
     def create(self, request, *args, **kwargs):
         repository_id = self.kwargs['repository_pk']
         product_id = self.kwargs['product_pk']
