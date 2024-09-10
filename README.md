@@ -1,4 +1,4 @@
-# 2024-2 MeasureSoftGram-Service
+# 2024-1 MeasureSoftGram-Service
 
 ## Badges
 
@@ -32,28 +32,9 @@ docker-compose up
 
 
 ## Endpoints
-```
-## Lista todas as métricas suportadas pelo MeasureSoftGram
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/supported-metrics/
 
-## Detalha o `repository` de ID 1
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/
+Swagger fica na rota `link/swagger/`
 
-## Lista o último valor coletado de cada uma das métricas suportadas
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/metrics/
-
-## Lista o último valor coletado de cada um métricas específica
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/metrics/<int>/
-
-## Lista o histórico de valores coletadas de cada uma das métricas suportadas
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/history/metrics/
-
-## Lista o histórico de valores coletadas de uma métrica específica
-- GET: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/history/metrics/<int>/
-
-## Coleta um novo valor de uma métrica
-- POST: https://measuresoftgram-service.herokuapp.com/api/v1/organizations/1/repository/1/create/metrics/
-```
 
 ## Acessa o painel administrativo do MeasureSoftGram
 - GET: https://measuresoftgram-service.herokuapp.com/admin/
