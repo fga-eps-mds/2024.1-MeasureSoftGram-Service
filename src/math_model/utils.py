@@ -1,4 +1,5 @@
 def parse_release_configuration(pre_config):
+    # Parse configuracao de release para pegar chaves do que foi planejado
     characteristics = []
     subcharacteristics = []
     measures = []

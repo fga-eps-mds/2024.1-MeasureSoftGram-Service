@@ -19,11 +19,13 @@ from subcharacteristics.serializers import CalculatedSubCharacteristicSerializer
 
 
 class MathModelServices():
+    # Logica de negocio de todo o modelo matematico
     def __init__(self, repository, product):
         self.repository = repository
         self.product = product
 
     def collect_metrics(self, data):
+        # Insercao de metricas do sonar e github
         supported_metrics = {
             supported_metric.key: supported_metric
             for supported_metric in SupportedMetric.objects.all()
@@ -66,6 +68,7 @@ class MathModelServices():
         return serializer_metrics.data
 
     def calculate_measures(self, measure_keys, release_configuration):
+        # Calculo de medidas a partir de metricas inseridas
         qs = SupportedMeasure.objects.filter(
             key__in=measure_keys
         ).prefetch_related(
