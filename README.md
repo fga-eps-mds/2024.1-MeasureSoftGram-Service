@@ -37,7 +37,7 @@ Swagger fica na rota `link/swagger/`
 
 
 ## Acessa o painel administrativo do MeasureSoftGram
-- GET: https://measuresoftgram-service.herokuapp.com/admin/
+- GET: https://epsmsg.shop/admin/
 - Converse com os membros da equipe para socilitar uma credencial de acesso
 
 ## How to run tests
