@@ -110,7 +110,7 @@ class SupportedMetric(models.Model):
             same_day = latest_metric.created_at
 
             # Remove hours, minutes and seconds
-            begin = same_day - timedelta(minutes=10)
+            begin = same_day - timedelta(minutes=20)
             end = same_day
 
             # Métrica de arquivos (inclusive de arquivos vazios)
